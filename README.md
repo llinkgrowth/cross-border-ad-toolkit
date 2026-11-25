@@ -20,7 +20,7 @@ One repo. Ten public tools. Stars, commits, and search authority stay on this pa
 | [packages/cloak-integration-kit](packages/cloak-integration-kit/) | 斗篷 / 访问规则对接：PHP 安装脚本、WP 插件、`ipcheck`、`utmcheck` | [cloak.ipcloak.ai](https://cloak.ipcloak.ai) | `node packages/cloak-integration-kit/cli.mjs --help` |
 | [packages/shortlink-rotator-demo](packages/shortlink-rotator-demo/) | 4 种分流 + WhatsApp / Telegram 链接拼接 | [link.ipcloak.ai](https://link.ipcloak.ai) | `node packages/shortlink-rotator-demo/cli.mjs --help` |
 | [packages/pixel-event-debugger](packages/pixel-event-debugger/) | Meta / TikTok / GA4 事件对照与去重 | [builder.ipcloak.ai](https://builder.ipcloak.ai) | `node packages/pixel-event-debugger/cli.mjs --help` |
-| [packages/landing-page-starter-demos](packages/landing-page-starter-demos/) | COD / 私域 / PWA 三套骨架 + 多语言校验 | [culolo.online](https://culolo.online) | `node packages/landing-page-starter-demos/cli.mjs list` |
+| [packages/landing-page-starter-demos](packages/landing-page-starter-demos/) | COD / 私域 / PWA 三套骨架 + 多语言校验 | [ulolo.online](https://www.ulolo.online/) | `node packages/landing-page-starter-demos/cli.mjs list` |
 | [packages/pwa-return-retention-kit](packages/pwa-return-retention-kit/) | 回流页（弹窗 / 信息流）+ PWA manifest | [builder.ipcloak.ai](https://builder.ipcloak.ai) | `node packages/pwa-return-retention-kit/cli.mjs --help` |
 | [packages/quiz-wheel-funnel-demos](packages/quiz-wheel-funnel-demos/) | 问答分流 + 本地转盘 + 内置浏览器跳出 | [builder.ipcloak.ai](https://builder.ipcloak.ai) | `node packages/quiz-wheel-funnel-demos/cli.mjs --help` |
 | [packages/scrm-webhook-attribution-kit](packages/scrm-webhook-attribution-kit/) | 进粉短码归因 + Webhook 验签 + 防重发 | [scrm.chuhaili.ai](https://scrm.chuhaili.ai) | `node packages/scrm-webhook-attribution-kit/cli.mjs --help` |
@@ -60,6 +60,7 @@ GitHub 可以讲斗篷（cloak）和分流。讲的是**知识、对接和公开
 |---|---|
 | 爱普落地页 | [builder.ipcloak.ai](https://builder.ipcloak.ai) |
 | 落地页超市 | [culolo.online](https://culolo.online) |
+| 落地页源码目录 | [ulolo.online](https://www.ulolo.online/) |
 | 分流短链 | [link.ipcloak.ai](https://link.ipcloak.ai) |
 | 斗篷 / 访问规则 | [cloak.ipcloak.ai](https://cloak.ipcloak.ai) |
 
