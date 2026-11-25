@@ -1,0 +1,35 @@
+{
+  "name": "pwa-return-retention-kit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zero-dependency PWA retention kit: dynamic manifest/SW generator, back-button & revisit return-page state machine (popup or full-screen feed), UTM pass-through and an offline interactive sandbox.",
+  "type": "module",
+  "license": "MIT",
+  "author": "IpCloak",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check src/retention-engine.mjs && node --check cli.mjs && node --test",
+    "manifest": "node cli.mjs manifest --name PulsePlay --short Pulse --start-url /offer",
+    "simulate": "node cli.mjs simulate-trigger --trigger both --dwell-ms 4500 --away-sec 12 --json",
+    "detect": "node cli.mjs detect-pwa --ua \"Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1\" --json"
+  },
+  "keywords": [
+    "pwa",
+    "retention",
+    "back-button",
+    "popstate",
+    "visibilitychange",
+    "return-page",
+    "popup",
+    "feed",
+    "manifest",
+    "service-worker",
+    "utm",
+    "attribution",
+    "zero-dependency",
+    "landing-page"
+  ]
+}

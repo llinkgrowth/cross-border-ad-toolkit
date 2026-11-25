@@ -1,0 +1,43 @@
+name: Bug Report
+description: Report an issue with the PHP installer, WordPress plugin, JS/Worker SDK, or Local Mock Server
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Please do not include sensitive production tokens in this issue.
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      options:
+        - PHP Installer & CloakClient (php-installer/)
+        - WordPress Plugin (wordpress-plugin/)
+        - Browser JS SDK (js-sdk/)
+        - Cloudflare Worker Gateway (cloudflare-worker/)
+        - Local Mock Server & CLI (mock-server/ & cli.mjs)
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Runtime Environment
+      description: Node.js version, PHP version, WordPress version, or Cloudflare Worker runtime
+      placeholder: "PHP 8.2 / Node v20.11.0 / WordPress 6.5"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Minimal steps or `node cli.mjs simulate ...` command to reproduce the issue
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs Actual Behavior
+      description: Describe what decision action or fail-open behavior you expected vs what occurred
+    validations:
+      required: true

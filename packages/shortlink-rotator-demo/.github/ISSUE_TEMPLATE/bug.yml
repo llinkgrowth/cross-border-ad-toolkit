@@ -1,0 +1,48 @@
+name: Bug report / 问题反馈
+description: 分流权重偏差、粘性 Cookie 失效、Deeplink 编码错误或 Worker 路由问题
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！请提供脱敏后的路由配置或复现命令，请勿粘贴真实生产环境号码或密钥。
+  - type: input
+    id: command
+    attributes:
+      label: 复现命令或输入参数
+      description: 使用的 CLI 命令、路由模式或 Deeplink 参数
+      placeholder: "node cli.mjs simulate wa-vip --clicks 1000 --mode quota"
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际输出
+      description: 实际看到的分流结果或报错信息
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望输出
+      description: 预期应该命中的目标或链接格式
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: 涉及模块
+      options:
+        - 核心路由算法 (src/router.mjs)
+        - Cloudflare Worker Demo (src/worker.mjs)
+        - 命令行模拟器 (cli.mjs)
+        - 网页可视化模拟器 (index.html)
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: 运行环境
+      description: Node.js 版本 / 浏览器版本 / 操作系统
+      placeholder: "Node 20.11 / Chrome 126 / macOS"

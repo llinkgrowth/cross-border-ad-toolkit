@@ -1,0 +1,30 @@
+{
+  "name": "@ipcloak/cloak-integration-kit",
+  "version": "1.0.0",
+  "description": "Zero-dependency integration kit, PHP installer, WordPress plugin, Edge Worker gateway, and local contract mock server for Visitor Access Rule & Safe Page Fallback.",
+  "type": "module",
+  "main": "./mock-server/server.mjs",
+  "bin": {
+    "cloak-kit": "./cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test test/integration.test.mjs",
+    "mock": "node mock-server/server.mjs",
+    "check": "node cli.mjs simulate --ua \"curl/8.4.0\" --ip \"203.0.113.10\""
+  },
+  "keywords": [
+    "traffic-guard",
+    "visitor-access-rules",
+    "bot-filtering",
+    "safe-page-fallback",
+    "cloudflare-worker",
+    "wordpress-plugin",
+    "php-installer",
+    "edge-gateway"
+  ],
+  "author": "IpCloak Engineering",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

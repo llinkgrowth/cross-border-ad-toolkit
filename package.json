@@ -1,0 +1,13 @@
+{
+  "name": "cross-border-ad-toolkit",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "One repo of offline tools for cross-border ads: UTM, landing-page checks, routing, pixels, locale QA.",
+  "license": "MIT",
+  "author": "IpCloak",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test packages/*/test/*.test.mjs"
+  }
+}

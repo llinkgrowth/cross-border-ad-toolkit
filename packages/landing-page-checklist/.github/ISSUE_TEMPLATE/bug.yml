@@ -1,0 +1,29 @@
+name: Bug report / 检查器问题
+description: 检查器误报、漏报、崩溃
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先看 `docs/automation.md`：自动检查只覆盖 37 项中的 12 项，WARN 不一定是 bug。
+  - type: input
+    id: target
+    attributes:
+      label: 被检查的 URL
+      description: 可脱敏；如果是本地页面，说明用什么服务起的
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: 实际输出
+      description: 贴 `--json` 的 summary 或相关 check 行
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 你认为应该是什么结果，为什么
+    validations:
+      required: true

@@ -1,0 +1,16 @@
+{
+  "name": "awesome-cross-border-marketing",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A curated, data-driven list of tools for cross-border paid ads: landing pages, traffic routing, lead management, tracking, and creative research.",
+  "license": "CC0-1.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check",
+    "links": "node scripts/check-links.mjs"
+  }
+}

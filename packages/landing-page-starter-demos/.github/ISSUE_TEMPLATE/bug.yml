@@ -1,0 +1,67 @@
+name: Bug report
+description: 报告模板、构建脚本或 CLI 的问题
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。请尽量提供可复现的信息；本项目零依赖、纯静态，复现通常只需要 Node 20+ 和浏览器。
+  - type: dropdown
+    id: area
+    attributes:
+      label: 出问题的部分
+      options:
+        - COD 模板 (cod-single-page)
+        - WhatsApp 模板 (whatsapp-lead-page)
+        - PWA 模板 (pwa-app-landing)
+        - 多语言构建器 (src/i18n-builder.mjs)
+        - CLI (cli.mjs)
+        - 文档 / README
+    validations:
+      required: true
+  - type: input
+    id: command
+    attributes:
+      label: 执行的命令
+      description: 例如 node cli.mjs render --template cod-single-page --locale ar --out /tmp/x.html
+      placeholder: node cli.mjs ...
+  - type: input
+    id: environment
+    attributes:
+      label: 环境
+      description: 操作系统、Node 版本、浏览器与版本
+      placeholder: macOS 15 / Node 22 / Chrome 131
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 运行 ...
+        2. 打开 ...
+        3. 看到 ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+      description: 有报错请贴完整输出；界面问题可附截图。
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我没有粘贴真实客户数据、密钥或投放账户信息
+          required: true
+        - label: 我确认问题可以用仓库内现有模板/脚本复现

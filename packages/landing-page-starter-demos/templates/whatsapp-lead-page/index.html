@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{t.whatsapp.meta.title}}</title>
+<meta name="description" content="{{t.whatsapp.meta.description}}">
+<style>
+  :root {
+    --bg: #eef6f1;
+    --surface: #ffffff;
+    --ink: #0f241b;
+    --ink-soft: #405c4f;
+    --ink-faint: #759184;
+    --line: #d5e6dc;
+    --accent: #1f8a5b;
+    --accent-dark: #146b45;
+    --accent-soft: #dff3e7;
+    --warn-soft: #fdf1e3;
+    --radius: 18px;
+    --radius-sm: 12px;
+    --shadow: 0 1px 2px rgba(15, 36, 27, .05), 0 16px 36px rgba(15, 36, 27, .08);
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Naskh Arabic", "Noto Sans Arabic", "Microsoft YaHei", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0 16px 120px;
+    background:
+      radial-gradient(circle at 85% 0%, #dff3e7 0%, transparent 45%),
+      var(--bg);
+    color: var(--ink);
+    font: 16px/1.65 var(--font);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .page { max-width: 940px; margin: 0 auto; }
+
+  /* ---------- language switcher (injected by the builder) ---------- */
+  .i18n-switcher { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .i18n-switcher__label {
+    font-size: 12px; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--ink-faint); margin-inline-end: 4px;
+  }
+  .i18n-switcher__link {
+    padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px;
+    background: var(--surface); color: var(--ink-soft); font-size: 12px; text-decoration: none;
+  }
+  .i18n-switcher__link:hover { border-color: var(--accent); color: var(--accent); }
+  .i18n-switcher__link[aria-current="true"] {
+    background: var(--accent-soft); border-color: var(--accent);
+    color: var(--accent-dark); font-weight: 600;
+  }
+
+  /* ---------- header ---------- */
+  .site-header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px; padding-block: 18px;
+  }
+  .demo-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border: 1px dashed var(--line); border-radius: 999px;
+    background: var(--surface); color: var(--ink-faint); font-size: 12px;
+  }
+  .demo-badge::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+    gap: 28px; align-items: center; padding-block: 26px 20px;
+  }
+  .eyebrow {
+    display: inline-block; margin-block-end: 12px; padding: 4px 10px;
+    border-radius: 999px; background: var(--accent-soft); color: var(--accent-dark);
+    font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  }
+  h1 { margin: 0 0 12px; font-size: clamp(28px, 5vw, 44px); line-height: 1.15; letter-spacing: -.02em; }
+  .hero p { margin: 0 0 20px; max-width: 46ch; color: var(--ink-soft); }
+  .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+  .reply { color: var(--ink-faint); font-size: 13px; }
+  .reply strong { color: var(--accent-dark); font-size: 17px; }
+
+  .button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 46px; padding: 10px 22px; border: 0; border-radius: 999px;
+    background: var(--accent); color: #fff; font: inherit; font-size: 15px;
+    font-weight: 650; text-decoration: none; cursor: pointer;
+    transition: background .15s ease, transform .15s ease;
+  }
+  .button:hover { background: var(--accent-dark); }
+  .button:active { transform: translateY(1px); }
+  .button.ghost { background: transparent; border: 1px solid var(--line); color: var(--ink-soft); }
+  .button.ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .button svg { inline-size: 18px; block-size: 18px; }
+
+  /* ---------- chat mock ---------- */
+  .chat-mock {
+    padding: 18px; border-radius: var(--radius); background: var(--surface);
+    box-shadow: var(--shadow); border: 1px solid var(--line);
+  }
+  .chat-mock__head {
+    display: flex; align-items: center; gap: 10px; padding-block-end: 12px;
+    border-block-end: 1px solid var(--line);
+  }
+  .avatar {
+    inline-size: 38px; block-size: 38px; border-radius: 50%;
+    background: linear-gradient(140deg, var(--accent), #4fc287);
+    display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 13px;
+  }
+  .chat-mock__name { font-size: 14px; font-weight: 650; }
+  .chat-mock__status { font-size: 12px; color: var(--ink-faint); }
+  .bubble {
+    margin-block-start: 14px; padding: 10px 14px; border-radius: 14px 14px 14px 4px;
+    background: var(--accent-soft); color: var(--ink); font-size: 13px;
+    max-width: 90%; overflow-wrap: anywhere;
+  }
+  html[dir="rtl"] .bubble { border-radius: 14px 14px 4px 14px; }
+
+  /* ---------- pain comparison ---------- */
+  section { margin-block-start: 36px; }
+  h2 { margin: 0 0 6px; font-size: clamp(20px, 3vw, 27px); letter-spacing: -.01em; }
+  .section-lead { margin: 0 0 18px; color: var(--ink-soft); font-size: 14px; }
+  .compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .compare-card {
+    padding: 20px; border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .compare-card.bad { background: var(--warn-soft); }
+  .compare-card.good { border-color: #bfe3cf; box-shadow: var(--shadow); }
+  .compare-card h3 { margin: 0 0 12px; font-size: 16px; }
+  .compare-card ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; }
+  .compare-card li { display: flex; gap: 9px; font-size: 14px; color: var(--ink-soft); }
+  .compare-card li::before {
+    content: "×"; flex: none; inline-size: 18px; block-size: 18px; border-radius: 50%;
+    display: grid; place-items: center; background: #f3d9c4; color: #8a4a1f;
+    font-size: 12px; font-weight: 700; margin-block-start: 3px;
+  }
+  .compare-card.good li::before { content: "✓"; background: var(--accent-soft); color: var(--accent-dark); }
+
+  /* ---------- preview ---------- */
+  .preview-card {
+    padding: 22px; border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--surface); box-shadow: var(--shadow);
+  }
+  .preview-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .preview-label { font-size: 12px; font-weight: 650; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-faint); }
+  pre#wa-message {
+    margin: 6px 0 0; padding: 12px 14px; border-radius: var(--radius-sm);
+    background: var(--accent-soft); color: var(--ink); font: 13px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    white-space: pre-wrap; overflow-wrap: anywhere;
+  }
+  code#wa-url {
+    display: block; margin-block-start: 6px; padding: 12px 14px;
+    border: 1px dashed var(--line); border-radius: var(--radius-sm);
+    background: #fbfdfc; color: var(--ink-soft);
+    font: 12px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    overflow-wrap: anywhere;
+  }
+  .preview-meta {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 10px; margin-block-start: 16px;
+  }
+  .preview-meta .note { margin: 0; max-width: 52ch; color: var(--ink-faint); font-size: 12px; }
+  .phone { font-size: 13px; color: var(--ink-soft); }
+  .phone strong { font-variant-numeric: tabular-nums; }
+
+  /* ---------- FAQ ---------- */
+  .faq { display: grid; gap: 10px; }
+  details { border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); padding: 0 16px; }
+  summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 0; font-size: 14px; font-weight: 650; cursor: pointer; list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--accent); font-size: 18px; line-height: 1; }
+  details[open] summary::after { content: "−"; }
+  details p { margin: 0 0 14px; color: var(--ink-soft); font-size: 14px; }
+  .faq-cta {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 12px; margin-block-start: 14px; padding: 16px 20px;
+    border-radius: var(--radius); background: var(--accent-soft);
+  }
+  .faq-cta p { margin: 0; font-weight: 650; color: var(--accent-dark); }
+
+  /* ---------- sticky CTA ---------- */
+  .sticky-cta {
+    position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 20;
+    display: flex; justify-content: center;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--bg) 35%, transparent);
+    pointer-events: none;
+  }
+  .sticky-cta .button { pointer-events: auto; box-shadow: 0 10px 30px rgba(20, 107, 69, .35); }
+  .sticky-cta .button svg { inline-size: 20px; block-size: 20px; }
+
+  footer {
+    margin-block-start: 36px; padding-block-start: 18px; border-block-start: 1px solid var(--line);
+    color: var(--ink-faint); font-size: 12px; line-height: 1.8;
+  }
+  footer p { margin: 0; }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; }
+    .compare { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="site-header">
+    <span class="demo-badge">{{t.common.demo.badge}}</span>
+    <!-- I18N:SWITCHER -->
+  </header>
+
+  <main id="wa-app"
+        data-wa-phone="15551234567"
+        data-wa-message="{{t.whatsapp.message.prefill}}"
+        data-wa-context="{{t.whatsapp.message.context}}">
+
+    <section class="hero">
+      <div>
+        <span class="eyebrow">{{t.whatsapp.hero.badge}}</span>
+        <h1>{{t.whatsapp.hero.title}}</h1>
+        <p>{{t.whatsapp.hero.subtitle}}</p>
+        <div class="hero-actions">
+          <a class="button" id="hero-chat" href="#preview">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3Zm4.6 12.3c-.2.6-1.2 1.1-1.7 1.1-.4 0-1 0-1.8-.3a10.6 10.6 0 0 1-4.7-4.1c-.5-.9-.8-1.6-.8-2.2 0-.6.3-1.1.6-1.4.2-.2.3-.3.6-.3h.4c.2 0 .3.1.4.4l.6 1.4c.1.2 0 .4-.1.5l-.4.5c-.1.2-.2.3-.1.5.3.7 1.2 1.9 2.3 2.4.2.1.4.1.5-.1l.5-.6c.1-.2.3-.2.5-.1l1.4.7c.2.1.3.2.3.4 0 .2 0 .6-.1.8Z"/></svg>
+            {{t.whatsapp.hero.cta}}
+          </a>
+          <span class="reply">{{t.whatsapp.hero.replyPrefix}} <strong>{{n.replyMinutes}}</strong> {{t.whatsapp.hero.replyUnit}}</span>
+        </div>
+        <p class="reply">{{t.whatsapp.hero.note}}</p>
+      </div>
+
+      <div class="chat-mock" aria-hidden="true">
+        <div class="chat-mock__head">
+          <span class="avatar">CS</span>
+          <div>
+            <div class="chat-mock__name">{{t.whatsapp.mock.name}}</div>
+            <div class="chat-mock__status">{{t.whatsapp.mock.status}}</div>
+          </div>
+        </div>
+        <div class="bubble">{{t.whatsapp.mock.bubble1}}</div>
+        <div class="bubble">{{t.whatsapp.mock.bubble2}}</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>{{t.whatsapp.pain.title}}</h2>
+      <p class="section-lead">{{t.whatsapp.pain.lead}}</p>
+      <div class="compare">
+        <div class="compare-card bad">
+          <h3>{{t.whatsapp.pain.left.title}}</h3>
+          <ul>
+            <li>{{t.whatsapp.pain.left.item1}}</li>
+            <li>{{t.whatsapp.pain.left.item2}}</li>
+            <li>{{t.whatsapp.pain.left.item3}}</li>
+          </ul>
+        </div>
+        <div class="compare-card good">
+          <h3>{{t.whatsapp.pain.right.title}}</h3>
+          <ul>
+            <li>{{t.whatsapp.pain.right.item1}}</li>
+            <li>{{t.whatsapp.pain.right.item2}}</li>
+            <li>{{t.whatsapp.pain.right.item3}}</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="preview">
+      <h2>{{t.whatsapp.preview.title}}</h2>
+      <p class="section-lead">{{t.whatsapp.preview.note}}</p>
+      <div class="preview-card">
+        <div class="preview-grid">
+          <div>
+            <span class="preview-label">{{t.whatsapp.preview.label}}</span>
+            <pre id="wa-message"></pre>
+          </div>
+          <div>
+            <span class="preview-label">{{t.whatsapp.phone.label}}</span>
+            <code id="wa-url"></code>
+          </div>
+        </div>
+        <div class="preview-meta">
+          <p class="note">{{t.whatsapp.preview.invalid}}</p>
+          <a class="button" id="open-chat" href="#preview">{{t.whatsapp.preview.open}}</a>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>{{t.whatsapp.faq.title}}</h2>
+      <div class="faq">
+        <details>
+          <summary>{{t.whatsapp.faq.q1}}</summary>
+          <p>{{t.whatsapp.faq.a1}}</p>
+        </details>
+        <details>
+          <summary>{{t.whatsapp.faq.q2}}</summary>
+          <p>{{t.whatsapp.faq.a2}}</p>
+        </details>
+        <details>
+          <summary>{{t.whatsapp.faq.q3}}</summary>
+          <p>{{t.whatsapp.faq.a3}}</p>
+        </details>
+      </div>
+      <div class="faq-cta">
+        <p>{{t.whatsapp.faq.cta}}</p>
+        <a class="button ghost" id="faq-chat" href="#preview">{{t.whatsapp.hero.cta}}</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>{{t.common.demo.note}}</p>
+    <p>{{t.whatsapp.footer.note}}</p>
+  </footer>
+</div>
+
+<div class="sticky-cta">
+  <a class="button" id="sticky-chat" href="#preview">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3Zm4.6 12.3c-.2.6-1.2 1.1-1.7 1.1-.4 0-1 0-1.8-.3a10.6 10.6 0 0 1-4.7-4.1c-.5-.9-.8-1.6-.8-2.2 0-.6.3-1.1.6-1.4.2-.2.3-.3.6-.3h.4c.2 0 .3.1.4.4l.6 1.4c.1.2 0 .4-.1.5l-.4.5c-.1.2-.2.3-.1.5.3.7 1.2 1.9 2.3 2.4.2.1.4.1.5-.1l.5-.6c.1-.2.3-.2.5-.1l1.4.7c.2.1.3.2.3.4 0 .2 0 .6-.1.8Z"/></svg>
+    {{t.whatsapp.sticky.cta}}
+  </a>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var UTM_PREFIX = /^utm_/i;
+  var app = document.getElementById('wa-app');
+  var messageBox = document.getElementById('wa-message');
+  var urlBox = document.getElementById('wa-url');
+  var chatLinks = [
+    document.getElementById('hero-chat'),
+    document.getElementById('open-chat'),
+    document.getElementById('faq-chat'),
+    document.getElementById('sticky-chat')
+  ];
+
+  function utmPairs() {
+    var pairs = [];
+    new URLSearchParams(location.search).forEach(function (value, key) {
+      if (UTM_PREFIX.test(key)) pairs.push(key + '=' + value);
+    });
+    return pairs;
+  }
+
+  function messageText() {
+    var prefill = app.getAttribute('data-wa-message') || '';
+    var contextLabel = app.getAttribute('data-wa-context') || '';
+    var pairs = utmPairs();
+    var context = pairs.length > 0 ? pairs.join('&') : location.pathname;
+    return prefill + '\n\n' + contextLabel + ': ' + context;
+  }
+
+  function chatUrl() {
+    var phone = app.getAttribute('data-wa-phone') || '';
+    return 'https://wa.me/' + encodeURIComponent(phone) + '?text=' + encodeURIComponent(messageText());
+  }
+
+  function renderPreview() {
+    var text = messageText();
+    var url = chatUrl();
+    messageBox.textContent = text;
+    urlBox.textContent = url;
+    chatLinks.forEach(function (link) {
+      if (link) link.href = url;
+    });
+  }
+
+  renderPreview();
+})();
+</script>
+</body>
+</html>

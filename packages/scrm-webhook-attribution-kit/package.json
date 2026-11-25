@@ -1,0 +1,28 @@
+{
+  "name": "scrm-webhook-attribution-kit",
+  "version": "1.0.0",
+  "description": "Zero-dependency inbound chat RefCode attribution parser, HMAC-SHA256 webhook signature verifier with replay protection, and human-in-the-loop safe broadcast throttler state machine.",
+  "type": "module",
+  "main": "./src/attribution-kit.mjs",
+  "bin": {
+    "scrm-webhook-attribution-kit": "./cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test test/scrm-kit.test.mjs",
+    "check": "node cli.mjs parse-msg --text \"Hi, I want the catalog [ref:lp01_fb_7a9c]\" --json && node cli.mjs sign-webhook --secret \"whsec_demo\" --event \"inbound_open\" --visitor \"v_101\" --json && node cli.mjs simulate-broadcast --count 10 --tier medium --inject-unknown-at 4 --json"
+  },
+  "keywords": [
+    "whatsapp-attribution",
+    "telegram-attribution",
+    "ref-code",
+    "webhook-hmac-sha256",
+    "idempotency",
+    "broadcast-throttler",
+    "scrm"
+  ],
+  "author": "IpCloak Engineering",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

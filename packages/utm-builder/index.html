@@ -1,0 +1,986 @@
+<!--
+  AUTO-GENERATED FILE — DO NOT EDIT.
+  Source:  src/template.html + src/styles.css + src/core.mjs + src/app.js
+  Rebuild: npm run build
+  Verify:  npm run check
+  SHA-256: e2bf1ebba11f36d0fa7bddf088d33f0f5667e5c80d5d6b76433b1c869200fbfb
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UTM 链接生成器 · UTM Builder</title>
+<meta name="description" content="免费开源的 UTM 链接生成器。中文界面、英文参数名，纯浏览器本地运行，不收集任何数据。">
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --ink: #111827;
+    --ink-2: #4b5563;
+    --ink-3: #6b7280;
+    --line: #e5e7eb;
+    --accent: #2563eb;
+    --accent-dark: #1d4ed8;
+    --ok: #0f766e;
+    --err: #b42318;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(17, 24, 39, .04), 0 8px 24px rgba(17, 24, 39, .06);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 28px 16px 56px;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap { max-width: 760px; margin: 0 auto; }
+
+  /* ---------- 头部 ---------- */
+  .hero { margin-bottom: 22px; }
+  .hero h1 {
+    margin: 0 0 6px;
+    font-size: clamp(22px, 5vw, 28px);
+    line-height: 1.3;
+    letter-spacing: -.01em;
+  }
+  .hero p { margin: 0; color: var(--ink-2); font-size: 14px; }
+
+  /* ---------- 卡片 ---------- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  /* ---------- 表单 ---------- */
+  .label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  .label em {
+    font-style: normal;
+    font-weight: 400;
+    color: var(--ink-3);
+    margin-left: 6px;
+  }
+  .hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 14px;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .14);
+  }
+  input.invalid { border-color: var(--err); }
+
+  .presets { border: 0; padding: 0; margin: 18px 0 0; }
+  .presets legend {
+    padding: 0;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    padding: 6px 13px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--ink-2);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip[aria-pressed="true"] {
+    background: #eff6ff;
+    border-color: var(--accent);
+    color: var(--accent-dark);
+    font-weight: 600;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 20px;
+  }
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+    .card { padding: 16px; }
+  }
+
+  /* ---------- 按钮 ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s;
+    white-space: nowrap;
+  }
+  .btn:hover { background: var(--accent-dark); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn.ghost {
+    background: #fff;
+    border-color: var(--line);
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+  .btn.ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.sm { padding: 5px 11px; font-size: 13px; }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  /* ---------- 生成结果 ---------- */
+  .result-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .result-head .label { margin: 0; }
+
+  .out {
+    display: block;
+    min-height: 52px;
+    padding: 12px 14px;
+    border: 1px dashed var(--line);
+    border-radius: 10px;
+    background: #fafbfc;
+    color: var(--ink);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    word-break: break-all;
+    white-space: pre-wrap;
+    user-select: all;
+  }
+  .out.empty { color: var(--ink-3); font-family: inherit; user-select: auto; }
+
+  .status {
+    margin: 10px 0 0;
+    min-height: 20px;
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+  .status.ok { color: var(--ok); }
+  .status.err { color: var(--err); }
+
+  /* ---------- 最近记录 ---------- */
+  .recent { list-style: none; margin: 0; padding: 0; }
+  .recent li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid var(--line);
+  }
+  .recent li:first-child { border-top: 0; }
+  .recent .url {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+
+  /* ---------- 页脚 ---------- */
+  footer {
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--ink-3);
+  }
+  footer p { margin: 0; }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .card { box-shadow: none; }
+    .actions, .chips, .btn { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <header class="hero">
+    <h1>UTM 链接生成器</h1>
+    <p>UTM Builder — 给投放链接加上可追溯的参数。全部在你自己的浏览器里完成。</p>
+  </header>
+
+  <section class="card">
+    <label class="label" for="baseUrl">落地页 URL<em>Landing page URL</em></label>
+    <input id="baseUrl" type="text" inputmode="url" autocomplete="off" spellcheck="false"
+           placeholder="example.com/landing">
+    <span class="hint">不写协议时会自动补 https://；原有 utm_* 参数会先清除再写入。</span>
+
+    <fieldset class="presets">
+      <legend>预设渠道<em style="font-style:normal;font-weight:400;color:#6b7280">Presets</em></legend>
+      <div class="chips" id="presets"></div>
+    </fieldset>
+
+    <div class="grid">
+      <div>
+        <label class="label" for="f-utm_source">来源<em>utm_source</em></label>
+        <input id="f-utm_source" data-key="utm_source" type="text" autocomplete="off"
+               spellcheck="false" placeholder="facebook">
+      </div>
+      <div>
+        <label class="label" for="f-utm_medium">媒介<em>utm_medium</em></label>
+        <input id="f-utm_medium" data-key="utm_medium" type="text" autocomplete="off"
+               spellcheck="false" placeholder="social">
+      </div>
+      <div>
+        <label class="label" for="f-utm_campaign">活动<em>utm_campaign</em></label>
+        <input id="f-utm_campaign" data-key="utm_campaign" type="text" autocomplete="off"
+               spellcheck="false" placeholder="spring_sale">
+      </div>
+      <div>
+        <label class="label" for="f-utm_term">关键词<em>utm_term</em></label>
+        <input id="f-utm_term" data-key="utm_term" type="text" autocomplete="off"
+               spellcheck="false" placeholder="running_shoes">
+      </div>
+      <div>
+        <label class="label" for="f-utm_content">内容<em>utm_content</em></label>
+        <input id="f-utm_content" data-key="utm_content" type="text" autocomplete="off"
+               spellcheck="false" placeholder="video_a">
+      </div>
+      <div>
+        <label class="label" for="f-utm_id">标识<em>utm_id</em></label>
+        <input id="f-utm_id" data-key="utm_id" type="text" autocomplete="off"
+               spellcheck="false" placeholder="20261124_a1">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="reset" class="btn ghost" type="button">重置</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="result-head">
+      <span class="label">生成结果<em>Generated URL</em></span>
+      <button id="copy" class="btn" type="button" disabled>一键复制</button>
+    </div>
+    <output id="out" class="out empty" aria-live="polite">填写上面的落地页 URL 和至少一个参数，这里会实时生成链接。</output>
+    <p id="status" class="status" role="status"></p>
+  </section>
+
+  <section class="card">
+    <div class="result-head">
+      <span class="label">最近 5 条<em>Recent</em></span>
+      <button id="clearRecent" class="btn ghost sm" type="button">清空</button>
+    </div>
+    <ul id="recent" class="recent"></ul>
+    <p id="recentEmpty" class="hint">复制成功后会保存在本机浏览器里，最多 5 条。</p>
+  </section>
+
+  <footer>
+    <p>本工具不收集任何数据：没有请求、没有埋点、没有账号体系，生成的链接不会离开你的浏览器。</p>
+    <p>由 <a href="https://builder.ipcloak.ai" rel="noopener">builder.ipcloak.ai</a> 提供 · 291 套模板 / 69 种语言</p>
+  </footer>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ===== src/core.mjs（去 export 后内联） ===== */
+/**
+ * src/core.mjs — UTM 纯函数核心。
+ *
+ * 设计约束：
+ * - 不依赖 DOM、Node API 或任何第三方库，浏览器与 Node 都能直接使用。
+ * - 所有函数都是纯函数：同样的入参永远得到同样的返回值，不读写全局状态。
+ * - 与重构前 index.html 的内联逻辑逐条对齐（见 README「算法伪代码」）。
+ *
+ * 数据流：
+ *   normalizeBaseUrl(base) ──┐
+ *   validateFields(fields) ──┼──> buildUtmUrl() ──> { url, warnings, ... }
+ *   stripUtmParams(search) ──┘
+ */
+
+/** 六个标准 UTM 参数，顺序即表单顺序、也是 CLI 输出顺序。 */
+const UTM_KEYS = Object.freeze([
+  'utm_source',
+  'utm_medium',
+  'utm_campaign',
+  'utm_term',
+  'utm_content',
+  'utm_id',
+]);
+
+/** 错误码：调用方据此判断该静默、提示还是以退出码 2 结束。 */
+const ERROR_CODES = Object.freeze({
+  EMPTY_BASE: 'EMPTY_BASE',
+  INVALID_URL: 'INVALID_URL',
+  UNSUPPORTED_PROTOCOL: 'UNSUPPORTED_PROTOCOL',
+  INCOMPLETE_HOST: 'INCOMPLETE_HOST',
+  INVALID_FIELDS: 'INVALID_FIELDS',
+  UNKNOWN_FIELD: 'UNKNOWN_FIELD',
+  INVALID_VALUE: 'INVALID_VALUE',
+});
+
+/** 警告码：不影响生成结果，只用于 CLI 提示与测试断言。 */
+const WARNING_CODES = Object.freeze({
+  EMPTY_FIELD: 'EMPTY_FIELD',
+  UTM_OVERRIDDEN: 'UTM_OVERRIDDEN',
+  NO_FIELDS: 'NO_FIELDS',
+});
+
+/** 只认 utm_ 前缀（大小写不敏感），与旧实现一致。 */
+const UTM_PREFIX_RE = /^utm_/i;
+/** 用户没写协议时补这个；也用于拼接 http/https。 */
+const DEFAULT_PROTOCOL = 'https:';
+const HTTP_PROTOCOL_RE = /^https?:\/\//i;
+const SUPPORTED_PROTOCOLS = Object.freeze(['http:', 'https:']);
+/** 本机/内网调试常用主机名，本身不带点，需要放行。 */
+const LOOPBACK_HOSTNAMES = Object.freeze(['localhost', '[::1]']);
+/** 四位点分 IPv4；与旧实现一致，不额外校验每段 0-255。 */
+const IPV4_RE = /^\d{1,3}(\.\d{1,3}){3}$/;
+
+/** 主机的可接受规则：loopback、IPv4 或至少带一个点的域名。 */
+function isSupportedHostname(hostname) {
+  if (!hostname) return false;
+  if (LOOPBACK_HOSTNAMES.includes(hostname)) return true;
+  if (IPV4_RE.test(hostname)) return true;
+  return hostname.includes('.');
+}
+
+/**
+ * 安全解码查询串里的 key/value。
+ * 非法百分号编码（如 `%E4`）直接返回原文，避免整个生成流程抛错。
+ */
+function decodeComponent(raw) {
+  try {
+    return decodeURIComponent(raw.replace(/\+/g, ' '));
+  } catch {
+    return raw;
+  }
+}
+
+/**
+ * 校验并归一化落地页 URL。
+ *
+ * @param {unknown} raw 用户输入，允许带前导/尾随空白。
+ * @returns {{ok: true, url: URL} | {ok: false, code: string, error: string}}
+ */
+function normalizeBaseUrl(raw) {
+  const value = String(raw ?? '').trim();
+  if (!value) {
+    return {
+      ok: false,
+      code: ERROR_CODES.EMPTY_BASE,
+      error: '请填写落地页 URL。',
+    };
+  }
+
+  // 只有明确写了 http(s):// 才原样解析；其余一律补 https://。
+  const candidate = HTTP_PROTOCOL_RE.test(value) ? value : DEFAULT_PROTOCOL + '//' + value;
+
+  let url;
+  try {
+    url = new URL(candidate);
+  } catch {
+    return {
+      ok: false,
+      code: ERROR_CODES.INVALID_URL,
+      error: '链接格式不正确，请检查一下。',
+    };
+  }
+
+  if (!SUPPORTED_PROTOCOLS.includes(url.protocol)) {
+    return {
+      ok: false,
+      code: ERROR_CODES.UNSUPPORTED_PROTOCOL,
+      error: '只支持 http / https 链接。',
+    };
+  }
+
+  if (!isSupportedHostname(url.hostname)) {
+    return {
+      ok: false,
+      code: ERROR_CODES.INCOMPLETE_HOST,
+      error: '请填写完整域名，例如 example.com/landing。',
+    };
+  }
+
+  return { ok: true, url };
+}
+
+/**
+ * 把查询串拆成条目，保留原始 pair 以便无损拼回。
+ *
+ * @param {string} search 可带或不带前导 `?`。
+ * @returns {Array<{raw: string, key: string, value: string, hasValue: boolean}>}
+ */
+function parseQuery(search) {
+  const raw = String(search ?? '').replace(/^\?/, '');
+  if (!raw) return [];
+
+  return raw
+    .split('&')
+    .filter(Boolean)
+    .map((pair) => {
+      const separator = pair.indexOf('=');
+      const rawKey = separator === -1 ? pair : pair.slice(0, separator);
+      const rawValue = separator === -1 ? '' : pair.slice(separator + 1);
+      return {
+        raw: pair,
+        key: decodeComponent(rawKey),
+        value: decodeComponent(rawValue),
+        hasValue: separator !== -1,
+      };
+    });
+}
+
+/**
+ * 按 key 收集查询参数，重复 key 会合并成数组（分析、去重场景用）。
+ *
+ * @param {string} search
+ * @returns {Map<string, string[]>} 插入顺序与原始查询串一致。
+ */
+function collectParams(search) {
+  const collected = new Map();
+  for (const { key, value } of parseQuery(search)) {
+    const values = collected.get(key);
+    if (values) {
+      values.push(value);
+    } else {
+      collected.set(key, [value]);
+    }
+  }
+  return collected;
+}
+
+/**
+ * 剔除查询串里所有 utm_* 参数（大小写不敏感）。
+ *
+ * @param {string} search
+ * @returns {{kept: string[], removed: Array<{raw: string, key: string, value: string, hasValue: boolean}>}}
+ *   kept 是原始 pair 字符串，保证非 utm 参数一个字节都不变。
+ */
+function stripUtmParams(search) {
+  const kept = [];
+  const removed = [];
+
+  for (const entry of parseQuery(search)) {
+    if (UTM_PREFIX_RE.test(entry.key)) {
+      removed.push(entry);
+    } else {
+      kept.push(entry.raw);
+    }
+  }
+
+  return { kept, removed };
+}
+
+/**
+ * 校验表单/CLI 传入的参数集合。
+ *
+ * 规则：
+ * - 只接受 UTM_KEYS 里的 key，其它 key 记为错误（避免静默丢弃用户输入）。
+ * - 值统一转字符串并 trim；空值只记警告并跳过。
+ * - 非原始类型的值（对象、数组、函数等）记为错误。
+ *
+ * @param {unknown} fields
+ * @returns {{ok: boolean, errors: Array<object>, warnings: Array<object>, values: Array<{key: string, value: string}>}}
+ */
+function validateFields(fields = {}) {
+  if (fields === null || typeof fields !== 'object' || Array.isArray(fields)) {
+    return {
+      ok: false,
+      errors: [
+        {
+          code: ERROR_CODES.INVALID_FIELDS,
+          message: '参数必须是一个对象。',
+        },
+      ],
+      warnings: [],
+      values: [],
+    };
+  }
+
+  const errors = [];
+  const warnings = [];
+  const values = [];
+
+  for (const key of Object.keys(fields)) {
+    if (!UTM_KEYS.includes(key)) {
+      errors.push({
+        code: ERROR_CODES.UNKNOWN_FIELD,
+        field: key,
+        message: `不支持的参数：${key}`,
+      });
+      continue;
+    }
+
+    const rawValue = fields[key];
+    const isPrimitive =
+      rawValue === null ||
+      rawValue === undefined ||
+      ['string', 'number', 'boolean', 'bigint'].includes(typeof rawValue);
+
+    if (!isPrimitive) {
+      errors.push({
+        code: ERROR_CODES.INVALID_VALUE,
+        field: key,
+        message: `${key} 的值必须是字符串或数字。`,
+      });
+      continue;
+    }
+
+    const value = rawValue === null || rawValue === undefined ? '' : String(rawValue).trim();
+    if (!value) {
+      warnings.push({
+        code: WARNING_CODES.EMPTY_FIELD,
+        field: key,
+        message: `${key} 的值为空，已跳过。`,
+      });
+      continue;
+    }
+
+    values.push({ key, value });
+  }
+
+  return { ok: errors.length === 0, errors, warnings, values };
+}
+
+/**
+ * 生成最终 UTM 链接。
+ *
+ * 行为（与重构前 index.html 一致）：
+ * 1. 归一化 base；空/非法时返回 ok:false，url 为空串。
+ * 2. 先剔除 base 里已有的 utm_* 参数，非 utm 参数与 hash 原样保留。
+ * 3. 按传入顺序追加参数，key/value 都走 encodeURIComponent。
+ * 4. 空值跳过；没有任何参数时仍返回只清理过 utm 的 URL，并带 NO_FIELDS 警告。
+ *
+ * @param {unknown} base 落地页 URL（可省略协议）。
+ * @param {Record<string, unknown>} [fields] 参数集合。
+ * @returns {{
+ *   ok: boolean, empty: boolean, url: string,
+ *   warnings: Array<object>, errors: Array<object>, error: string,
+ *   removedUtmCount: number, fields: Record<string, string>, fieldCount: number
+ * }}
+ */
+function buildUtmUrl(base, fields = {}) {
+  const normalized = normalizeBaseUrl(base);
+
+  if (!normalized.ok) {
+    return {
+      ok: false,
+      empty: normalized.code === ERROR_CODES.EMPTY_BASE,
+      url: '',
+      warnings: [],
+      errors: [{ code: normalized.code, message: normalized.error }],
+      error: normalized.error,
+      removedUtmCount: 0,
+      fields: {},
+      fieldCount: 0,
+    };
+  }
+
+  const url = normalized.url;
+  const { kept, removed } = stripUtmParams(url.search);
+  const validation = validateFields(fields);
+
+  if (!validation.ok) {
+    return {
+      ok: false,
+      empty: false,
+      url: '',
+      warnings: validation.warnings,
+      errors: validation.errors,
+      error: validation.errors[0].message,
+      removedUtmCount: removed.length,
+      fields: {},
+      fieldCount: 0,
+    };
+  }
+
+  const search = kept.slice();
+  const appliedFields = {};
+
+  for (const { key, value } of validation.values) {
+    appliedFields[key] = value;
+    search.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+  }
+
+  const query = search.length ? `?${search.join('&')}` : '';
+  const result = `${url.protocol}//${url.host}${url.pathname}${query}${url.hash}`;
+
+  const warnings = validation.warnings.slice();
+  if (removed.length > 0) {
+    warnings.push({
+      code: WARNING_CODES.UTM_OVERRIDDEN,
+      count: removed.length,
+      message: `已覆盖原有 ${removed.length} 个 utm_* 参数`,
+    });
+  }
+  if (validation.values.length === 0) {
+    warnings.push({
+      code: WARNING_CODES.NO_FIELDS,
+      message: '还没有填写参数，加一个 utm_source 就能生成。',
+    });
+  }
+
+  return {
+    ok: true,
+    empty: false,
+    url: result,
+    warnings,
+    errors: [],
+    error: '',
+    removedUtmCount: removed.length,
+    fields: appliedFields,
+    fieldCount: validation.values.length,
+  };
+}
+
+  /* DOM 层只通过 window.UTMCore 使用核心逻辑，不直接依赖源码路径。 */
+  window.UTMCore = Object.freeze({
+    UTM_KEYS: UTM_KEYS,
+    ERROR_CODES: ERROR_CODES,
+    WARNING_CODES: WARNING_CODES,
+    normalizeBaseUrl: normalizeBaseUrl,
+    parseQuery: parseQuery,
+    collectParams: collectParams,
+    stripUtmParams: stripUtmParams,
+    validateFields: validateFields,
+    buildUtmUrl: buildUtmUrl,
+  });
+
+  /* ===== src/app.js ===== */
+/**
+ * src/app.js — DOM 层。
+ *
+ * 本文件只负责「读表单、写结果、绑定事件」，不含 URL 生成规则：
+ * 所有 UTM 逻辑都来自构建时注入的 window.UTMCore（见 src/core.mjs）。
+ *
+ * 构建时它会被内联进 index.html 的 <script>；单独打开本文件不会执行。
+ */
+(function (global) {
+  'use strict';
+
+  var core = global.UTMCore;
+  if (!core) {
+    throw new Error('UTMCore 未加载：请通过 index.html 或构建产物运行。');
+  }
+
+  /** localStorage key；改名会让用户已有历史失效。 */
+  const STORAGE_KEY = 'utm-builder:recent';
+  /** 历史记录上限。 */
+  const MAX_RECENT = 5;
+  /** 结果区空状态文案，与初始 HTML 保持一致。 */
+  const EMPTY_OUTPUT_TEXT = '填写上面的落地页 URL 和至少一个参数，这里会实时生成链接。';
+  const NO_FIELDS_STATUS = '还没有填写参数，加一个 utm_source 就能生成。';
+
+  /** 预设渠道：只填 source + medium，其它参数留给用户。 */
+  const PRESETS = Object.freeze([
+    { name: 'Facebook', source: 'facebook', medium: 'social' },
+    { name: 'TikTok', source: 'tiktok', medium: 'social' },
+    { name: 'Google', source: 'google', medium: 'cpc' },
+    { name: 'WhatsApp', source: 'whatsapp', medium: 'social' },
+    { name: 'Email', source: 'newsletter', medium: 'email' },
+  ]);
+
+  const els = {
+    baseUrl: document.getElementById('baseUrl'),
+    presets: document.getElementById('presets'),
+    out: document.getElementById('out'),
+    status: document.getElementById('status'),
+    copy: document.getElementById('copy'),
+    reset: document.getElementById('reset'),
+    recent: document.getElementById('recent'),
+    recentEmpty: document.getElementById('recentEmpty'),
+    clearRecent: document.getElementById('clearRecent'),
+  };
+
+  /** 表单里所有 utm_* 输入框，按 DOM 顺序（即 UTM_KEYS 顺序）。 */
+  function paramInputs() {
+    return Array.prototype.slice.call(document.querySelectorAll('[data-key]'));
+  }
+
+  /** 读表单，空值不进入结果，保证不会生成 `utm_source=`。 */
+  function readFields() {
+    const fields = {};
+    paramInputs().forEach(function (input) {
+      const value = input.value.trim();
+      if (value) fields[input.getAttribute('data-key')] = value;
+    });
+    return fields;
+  }
+
+  function fillFields(fields) {
+    paramInputs().forEach(function (input) {
+      input.value = fields[input.getAttribute('data-key')] || '';
+    });
+  }
+
+  /**
+   * 调核心生成 URL，并翻译成 UI 需要的 {url, status, tone}。
+   * tone: '' 普通 / 'ok' 成功 / 'err' 错误。
+   */
+  function build() {
+    const result = core.buildUtmUrl(els.baseUrl.value, readFields());
+
+    if (result.empty) {
+      return { url: '', status: '', tone: '' };
+    }
+    if (!result.ok) {
+      return { url: '', status: result.error, tone: 'err' };
+    }
+
+    let status = '';
+    let tone = '';
+    if (!result.fieldCount) {
+      status = NO_FIELDS_STATUS;
+    } else {
+      status = '已生成 · ' + result.fieldCount + ' 个参数';
+      tone = 'ok';
+      if (result.removedUtmCount) {
+        status += ' · 已覆盖原有 ' + result.removedUtmCount + ' 个 utm_* 参数';
+      }
+    }
+
+    return { url: result.url, status: status, tone: tone };
+  }
+
+  function render() {
+    const result = build();
+    const hasUrl = Boolean(result.url);
+
+    els.out.textContent = hasUrl ? result.url : EMPTY_OUTPUT_TEXT;
+    els.out.classList.toggle('empty', !hasUrl);
+    els.copy.disabled = !hasUrl;
+
+    els.status.textContent = result.status;
+    els.status.className = 'status' + (result.tone ? ' ' + result.tone : '');
+
+    els.baseUrl.classList.toggle('invalid', result.tone === 'err');
+  }
+
+  /** 优先用异步剪贴板 API；file:// 等非安全上下文降级到 execCommand。 */
+  function copyText(text) {
+    if (navigator.clipboard && global.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.top = '-1000px';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      let ok = false;
+      try {
+        ok = document.execCommand('copy');
+      } catch {
+        ok = false;
+      }
+      document.body.removeChild(area);
+      ok ? resolve() : reject(new Error('copy failed'));
+    });
+  }
+
+  /* ---------- 最近记录 ---------- */
+
+  function loadRecent() {
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      return Array.isArray(data) ? data : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveRecent(list) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    } catch {
+      /* 隐私模式下写入失败时静默忽略 */
+    }
+  }
+
+  function remember(url) {
+    const fields = readFields();
+    const base = els.baseUrl.value.trim();
+    const list = loadRecent().filter(function (item) {
+      return item.url !== url;
+    });
+    list.unshift({ url: url, base: base, fields: fields });
+    saveRecent(list.slice(0, MAX_RECENT));
+    renderRecent();
+  }
+
+  function renderRecent() {
+    const list = loadRecent();
+    els.recent.textContent = '';
+
+    list.forEach(function (item) {
+      const li = document.createElement('li');
+
+      const span = document.createElement('span');
+      span.className = 'url';
+      span.textContent = item.url;
+      span.title = item.url;
+
+      const fill = document.createElement('button');
+      fill.className = 'btn ghost sm';
+      fill.type = 'button';
+      fill.textContent = '填入';
+      fill.addEventListener('click', function () {
+        els.baseUrl.value = item.base || item.url.split('?')[0];
+        fillFields(item.fields || {});
+        render();
+      });
+
+      const copy = document.createElement('button');
+      copy.className = 'btn ghost sm';
+      copy.type = 'button';
+      copy.textContent = '复制';
+      copy.addEventListener('click', function () {
+        copyText(item.url).then(function () {
+          els.status.textContent = '已复制最近记录';
+          els.status.className = 'status ok';
+        });
+      });
+
+      li.appendChild(span);
+      li.appendChild(fill);
+      li.appendChild(copy);
+      els.recent.appendChild(li);
+    });
+
+    els.recentEmpty.hidden = list.length > 0;
+  }
+
+  /* ---------- 预设渠道 ---------- */
+
+  function renderPresets() {
+    PRESETS.forEach(function (preset) {
+      const btn = document.createElement('button');
+      btn.className = 'chip';
+      btn.type = 'button';
+      btn.textContent = preset.name;
+      btn.setAttribute('aria-pressed', 'false');
+      btn.addEventListener('click', function () {
+        document.getElementById('f-utm_source').value = preset.source;
+        document.getElementById('f-utm_medium').value = preset.medium;
+        Array.prototype.forEach.call(
+          els.presets.querySelectorAll('.chip'),
+          function (chip) {
+            chip.setAttribute('aria-pressed', 'false');
+          }
+        );
+        btn.setAttribute('aria-pressed', 'true');
+        render();
+      });
+      els.presets.appendChild(btn);
+    });
+  }
+
+  /* ---------- 事件绑定 ---------- */
+
+  els.baseUrl.addEventListener('input', render);
+  paramInputs().forEach(function (input) {
+    input.addEventListener('input', render);
+  });
+
+  els.copy.addEventListener('click', function () {
+    const url = build().url;
+    if (!url) return;
+    copyText(url)
+      .then(function () {
+        els.status.textContent = '已复制到剪贴板';
+        els.status.className = 'status ok';
+        remember(url);
+      })
+      .catch(function () {
+        els.status.textContent = '复制失败，请手动选中链接复制。';
+        els.status.className = 'status err';
+      });
+  });
+
+  els.reset.addEventListener('click', function () {
+    els.baseUrl.value = '';
+    fillFields({});
+    Array.prototype.forEach.call(
+      els.presets.querySelectorAll('.chip'),
+      function (chip) {
+        chip.setAttribute('aria-pressed', 'false');
+      }
+    );
+    render();
+    els.baseUrl.focus();
+  });
+
+  els.clearRecent.addEventListener('click', function () {
+    saveRecent([]);
+    renderRecent();
+  });
+
+  renderPresets();
+  renderRecent();
+  render();
+})(window);
+})();
+</script>
+</body>
+</html>

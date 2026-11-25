@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      links_limit:
+        description: "Max links to check (empty = all)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: README is generated from data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Syntax check (no dependencies to install)
+        run: |
+          node --check scripts/build.mjs
+          node --check scripts/check-links.mjs
+      - name: README must match data/tools.json
+        run: node scripts/build.mjs --check
+      - name: Data schema + red-line scan
+        run: node scripts/build.mjs --stdout > /dev/null
+
+  links:
+    name: Link check (manual)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check links
+        env:
+          LIMIT: ${{ inputs.links_limit }}
+        run: |
+          if [ -n "$LIMIT" ]; then
+            node scripts/check-links.mjs --limit "$LIMIT"
+          else
+            node scripts/check-links.mjs
+          fi

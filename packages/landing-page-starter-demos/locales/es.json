@@ -1,0 +1,270 @@
+{
+  "_meta": {
+    "locale": "es",
+    "label": "Español",
+    "direction": "ltr",
+    "currency": {
+      "code": "MXN",
+      "symbol": "$",
+      "position": "before"
+    },
+    "numberFormat": {
+      "decimal": ",",
+      "thousands": ".",
+      "digits": "latn"
+    }
+  },
+  "numbers": {
+    "orders": 12000,
+    "rating": 4.8,
+    "stock": 37,
+    "replyMinutes": 10,
+    "installs": 50000
+  },
+  "messages": {
+    "common": {
+      "language": "Idioma",
+      "demo": {
+        "badge": "Demo inicial",
+        "note": "Es solo un esqueleto de demo: reemplaza los textos y conecta tu propia API antes de publicar."
+      },
+      "footer": {
+        "note": "Sin solicitudes externas. Sin rastreo. Los datos se quedan en tu navegador."
+      }
+    },
+    "cod": {
+      "meta": {
+        "title": "Starter COD de una página — demo de landing con pago contra entrega",
+        "description": "Esqueleto de landing COD sin dependencias: portada, selector de variantes, formulario de entrega y vista previa local del pedido."
+      },
+      "hero": {
+        "badge": "Pago contra entrega",
+        "title": "Pruébalo primero y paga cuando llegue.",
+        "subtitle": "Un esqueleto limpio de producto único para campañas de pago contra entrega en el sudeste asiático y Oriente Medio.",
+        "cta": "Elige tu opción",
+        "note": "Envío gratis en cada pedido",
+        "socialProof": "pedidos entregados",
+        "visualTag": "Marcador de imagen del producto"
+      },
+      "trust": {
+        "delivery": {
+          "title": "Entrega en 2–4 días",
+          "body": "Cobertura nacional con actualizaciones de seguimiento."
+        },
+        "cod": {
+          "title": "Paga al mensajero",
+          "body": "Sin tarjeta. Revisa el producto y paga en tu puerta."
+        },
+        "returns": {
+          "title": "Devoluciones sencillas",
+          "body": "Los productos sin abrir se pueden devolver en 30 días."
+        }
+      },
+      "urgency": {
+        "ends": "La oferta termina en",
+        "stockLabel": "Solo quedan",
+        "stockUnit": "en stock hoy"
+      },
+      "spec": {
+        "title": "Elige tu variante",
+        "subtitle": "La demo lleva tu selección a la vista previa del pedido.",
+        "color": {
+          "label": "Color",
+          "sand": "Arena",
+          "slate": "Pizarra",
+          "olive": "Oliva"
+        },
+        "size": {
+          "label": "Talla",
+          "small": "Pequeña",
+          "medium": "Mediana",
+          "large": "Grande"
+        },
+        "qty": {
+          "label": "Cantidad"
+        }
+      },
+      "form": {
+        "title": "Dirección de entrega",
+        "subtitle": "Pago contra entrega. El mensajero llamará antes de llegar.",
+        "name": {
+          "label": "Nombre completo",
+          "placeholder": "p. ej. Aisyah Rahman"
+        },
+        "phone": {
+          "label": "Teléfono",
+          "placeholder": "Incluye el código de país"
+        },
+        "address": {
+          "label": "Dirección",
+          "placeholder": "Número, calle, distrito"
+        },
+        "city": {
+          "label": "Ciudad",
+          "placeholder": "Ciudad o provincia"
+        },
+        "note": {
+          "label": "Nota de entrega (opcional)",
+          "placeholder": "Punto de referencia, hora preferida, etc."
+        },
+        "submit": "Confirmar pedido",
+        "privacy": "Solo se usa para crear esta vista previa local. No se envía nada a ningún sitio.",
+        "error": "Completa tu nombre, teléfono y dirección."
+      },
+      "success": {
+        "title": "Vista previa del pedido",
+        "intro": "Esta vista previa se genera en tu navegador. Conecta tu propio endpoint de pedidos para producción.",
+        "close": "Cerrar",
+        "name": "Nombre",
+        "phone": "Teléfono",
+        "address": "Dirección",
+        "city": "Ciudad",
+        "variant": "Variante",
+        "quantity": "Cantidad",
+        "note": "Nota",
+        "none": "—"
+      },
+      "faq": {
+        "title": "Preguntas sobre el pago contra entrega",
+        "q1": "¿Pago algo por adelantado?",
+        "a1": "No. La demo solo recoge una dirección de entrega y el pago ocurre cuando llega el mensajero.",
+        "q2": "¿Puedo cambiar la dirección después de pedir?",
+        "a2": "En producción, pide al mensajero que lo actualice antes del envío. Esta demo no almacena la dirección.",
+        "q3": "¿Qué necesito preparar?",
+        "a3": "Basta un teléfono localizable y una dirección completa."
+      }
+    },
+    "whatsapp": {
+      "meta": {
+        "title": "Starter de página de WhatsApp — demo de landing para chat",
+        "description": "Esqueleto de landing de WhatsApp sin dependencias con tarjetas comparativas, FAQ, CTA fijo y vista previa de chat con UTM."
+      },
+      "hero": {
+        "badge": "Habla con una persona",
+        "title": "¿Dudas antes de pedir?",
+        "subtitle": "Evita el formulario. Pregunta a una persona real, recibe respuesta y decide.",
+        "cta": "Chatear por WhatsApp",
+        "note": "Solo un número de demo: reemplázalo por el de tu negocio.",
+        "replyPrefix": "Respondemos en unos",
+        "replyUnit": "minutos"
+      },
+      "mock": {
+        "name": "Equipo de soporte",
+        "status": "en línea ahora",
+        "bubble1": "¡Hola! Pregúntanos lo que quieras sobre el producto.",
+        "bubble2": "Solemos responder en unos minutos."
+      },
+      "pain": {
+        "title": "Dos formas de obtener respuesta",
+        "lead": "Un formulario solo deja salir; una conversación deja preguntar.",
+        "left": {
+          "title": "Solo autoservicio",
+          "item1": "Páginas de FAQ largas que hay que leer",
+          "item2": "Formularios que se quedan callados tras enviarlos",
+          "item3": "Sin forma de preguntar de nuevo"
+        },
+        "right": {
+          "title": "Primero el chat",
+          "item1": "Un toque abre una conversación real",
+          "item2": "Respuestas en las palabras del cliente",
+          "item3": "El contexto de la página llega con el mensaje"
+        }
+      },
+      "preview": {
+        "title": "Vista previa del mensaje",
+        "label": "Mensaje precargado",
+        "note": "El enlace mantiene los parámetros UTM actuales para saber qué anuncio inició el chat.",
+        "open": "Abrir chat",
+        "invalid": "Este número de demo no es una cuenta real de WhatsApp."
+      },
+      "faq": {
+        "title": "Antes de escribir",
+        "q1": "¿Es un número real de WhatsApp?",
+        "a1": "No. El starter usa un número de demo y nunca lo contacta automáticamente.",
+        "q2": "¿El mensaje incluye los parámetros del anuncio?",
+        "a2": "Sí. La vista previa muestra cómo pasan los parámetros UTM al mensaje.",
+        "q3": "¿Puedo usar mi propio número?",
+        "a3": "Reemplaza el atributo data-wa-phone del template por el número de tu negocio.",
+        "cta": "¿Aún tienes dudas?"
+      },
+      "sticky": {
+        "cta": "Chatear por WhatsApp"
+      },
+      "message": {
+        "prefill": "¡Hola! Me interesa la demo y tengo una pregunta.",
+        "context": "Contexto de la página"
+      },
+      "phone": {
+        "label": "Número del negocio (demo)"
+      },
+      "footer": {
+        "note": "El botón flotante sigue accesible mientras se desplaza."
+      }
+    },
+    "pwa": {
+      "meta": {
+        "title": "Starter de landing PWA — demo de instalación",
+        "description": "Esqueleto de landing de instalación sin dependencias con manifest, service worker y demo de beforeinstallprompt."
+      },
+      "hero": {
+        "badge": "App web instalable",
+        "title": "Añádelo a tu pantalla de inicio.",
+        "subtitle": "Un esqueleto ligero de instalación con manifest, service worker y demo de instalación en un toque.",
+        "cta": "Instalar app",
+        "note": "Funciona sin conexión tras la primera visita.",
+        "socialProof": "instalaciones hasta ahora"
+      },
+      "shots": {
+        "title": "Un vistazo rápido",
+        "one": "Vista previa de inicio",
+        "two": "Vista previa de funciones",
+        "three": "Vista previa sin conexión"
+      },
+      "features": {
+        "title": "Hecho para instalar",
+        "speed": {
+          "title": "Carga rápida",
+          "body": "Un archivo HTML, sin frameworks ni solicitudes externas."
+        },
+        "offline": {
+          "title": "Funciona sin conexión",
+          "body": "El service worker guarda el shell tras la primera visita."
+        },
+        "install": {
+          "title": "Se instala como app",
+          "body": "El prompt de instalación se intercepta y se reproduce desde un botón."
+        }
+      },
+      "install": {
+        "title": "Instalación en un toque",
+        "step1": "Abre esta página en un navegador compatible con la instalación.",
+        "step2": "Pulsa el botón de abajo; la demo reproduce el prompt guardado.",
+        "step3": "Ábrelo desde el inicio y recarga sin conexión.",
+        "button": "Añadir a inicio",
+        "unsupported": "Este navegador no muestra el prompt de instalación. Usa el menú del navegador.",
+        "ready": "Prompt de instalación capturado. El botón de abajo está listo.",
+        "waiting": "Esperando el prompt de instalación del navegador…",
+        "installed": "Instalado. Puedes abrirlo desde la pantalla de inicio.",
+        "dismissed": "Instalación descartada. Puedes intentarlo desde el menú del navegador."
+      },
+      "offline": {
+        "title": "Listo sin conexión",
+        "body": "Tras la primera visita, el service worker sirve este shell desde la caché.",
+        "status": "Estado de la caché",
+        "online": "En línea",
+        "offline": "Sin conexión",
+        "unavailable": "El service worker necesita http(s); esta página se está abriendo como archivo local."
+      },
+      "faq": {
+        "title": "Preguntas sobre PWA",
+        "q1": "¿Por qué a veces el botón de instalar está desactivado?",
+        "a1": "Los navegadores solo muestran el prompt tras sus propias comprobaciones. La demo explica la alternativa.",
+        "q2": "¿Esta demo necesita un paso de compilación?",
+        "a2": "No. El manifest y el service worker son archivos normales junto a index.html."
+      },
+      "footer": {
+        "note": "Los iconos y el manifest son archivos locales; nada sale de tu navegador."
+      }
+    }
+  }
+}

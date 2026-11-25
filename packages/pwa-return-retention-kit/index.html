@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PWA 桌面留存 + 回流页状态机 · 离线交互沙盒</title>
+<meta name="description" content="PWA 桌面图标留存与回流页（Popup 弹窗 / Feed 整屏信息流）交互式离线沙盒：返回键 popstate、切后台 visibilitychange、频次锁、已转化静默与 UTM 透传。零外部请求。">
+<link rel="icon" href="data:,">
+<style>
+  :root {
+    --bg: #0b1120;
+    --panel: #101a2e;
+    --panel-2: #0d1526;
+    --line: #22304a;
+    --ink: #e7edf7;
+    --ink-2: #9fb0c9;
+    --ink-3: #6b7f9e;
+    --accent: #38bdf8;
+    --accent-2: #22d3ee;
+    --ok: #34d399;
+    --warn: #fbbf24;
+    --bad: #f87171;
+    --radius: 14px;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: radial-gradient(1200px 600px at 15% -10%, #12304b 0%, transparent 60%), var(--bg);
+    color: var(--ink);
+    font: 14px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    min-height: 100vh;
+  }
+  a { color: var(--accent); }
+  h1, h2, h3 { margin: 0; line-height: 1.25; }
+  code, pre { font-family: var(--mono); }
+
+  .topbar {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 18px 22px; border-bottom: 1px solid var(--line);
+    background: rgba(9, 15, 27, .72); backdrop-filter: blur(8px);
+    position: sticky; top: 0; z-index: 30;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), #6366f1);
+    display: grid; place-items: center; font-weight: 800; color: #04121e;
+  }
+  .brand h1 { font-size: 16px; }
+  .brand p { margin: 0; color: var(--ink-3); font-size: 12px; }
+  .pill {
+    border: 1px solid var(--line); background: var(--panel-2); color: var(--ink-2);
+    border-radius: 999px; padding: 3px 10px; font-size: 12px; white-space: nowrap;
+  }
+  .pill.ok { color: var(--ok); border-color: #1d5b46; }
+  .spacer { flex: 1; }
+
+  .layout {
+    display: grid; grid-template-columns: minmax(360px, 460px) minmax(420px, 1fr);
+    gap: 22px; padding: 22px; max-width: 1440px; margin: 0 auto;
+  }
+  @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 16px;
+  }
+  .card + .card { margin-top: 16px; }
+  .card h2 { font-size: 13px; color: var(--ink-2); text-transform: uppercase; letter-spacing: .08em; }
+  .card h2 .hint { text-transform: none; letter-spacing: 0; color: var(--ink-3); font-weight: 400; }
+
+  /* ------- 手机模拟 ------- */
+  .phone-shell { position: relative; }
+  .phone {
+    position: relative; width: 100%; max-width: 392px; margin: 0 auto;
+    border: 8px solid #1c2942; border-radius: 34px; background: #08101d;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, .45);
+    overflow: hidden;
+  }
+  .phone-notch {
+    position: absolute; left: 50%; top: 0; transform: translateX(-50%);
+    width: 118px; height: 20px; background: #1c2942; border-radius: 0 0 12px 12px; z-index: 12;
+  }
+  .phone-screen { position: relative; min-height: 560px; display: flex; flex-direction: column; }
+
+  .landing { padding: 30px 20px 20px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .landing-brand { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+  .landing-brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  .hero {
+    margin-top: 8px; padding: 18px; border-radius: 16px;
+    background: linear-gradient(160deg, #12203a, #0d1a30 60%, #101f38);
+    border: 1px solid #22304a;
+  }
+  .hero .tag { font-size: 11px; color: var(--accent-2); letter-spacing: .1em; }
+  .hero h3 { font-size: 21px; margin: 8px 0 6px; }
+  .hero p { margin: 0; color: var(--ink-2); font-size: 13px; }
+  .phone-cta {
+    margin-top: 4px; width: 100%; padding: 13px 16px; border: 0; border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), #6366f1); color: #04121e;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+  .phone-cta:active { transform: translateY(1px); }
+  .phone-note { font-size: 11px; color: var(--ink-3); text-align: center; margin-top: 2px; }
+  .mini-list { display: grid; gap: 8px; margin-top: 4px; }
+  .mini-row { display: flex; gap: 10px; align-items: center; padding: 9px 11px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 11px; font-size: 12px; color: var(--ink-2); }
+  .mini-thumb { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, #1e3a5f, #312e81); flex: none; }
+
+  /* ------- 回流层 ------- */
+  .return-layer { position: absolute; inset: 0; z-index: 20; display: none; }
+  .return-layer.open { display: block; }
+  .return-popup {
+    position: absolute; inset: 0; background: rgba(3, 8, 18, .66);
+    display: flex; align-items: flex-end; padding: 16px;
+  }
+  .popup-card {
+    width: 100%; background: #0f1a2e; border: 1px solid #2b3d5f; border-radius: 18px;
+    padding: 18px; box-shadow: 0 20px 50px rgba(0,0,0,.5);
+  }
+  .popup-card .hook {
+    display: inline-block; font-size: 11px; letter-spacing: .1em; color: var(--accent-2);
+    border: 1px dashed #2b4a66; border-radius: 8px; padding: 3px 8px; margin-bottom: 10px;
+  }
+  .popup-card h3 { font-size: 18px; margin-bottom: 6px; }
+  .popup-card p { margin: 0 0 12px; color: var(--ink-2); font-size: 13px; }
+  .countdown { font-size: 12px; color: var(--warn); margin-bottom: 12px; }
+  .popup-actions { display: grid; gap: 8px; }
+  .btn {
+    border: 1px solid var(--line); background: #16233b; color: var(--ink);
+    border-radius: 11px; padding: 11px 14px; font-size: 13px; cursor: pointer;
+  }
+  .btn.primary { background: linear-gradient(135deg, var(--accent), #6366f1); color: #04121e; border: 0; font-weight: 700; }
+  .btn.ghost { background: transparent; color: var(--ink-2); }
+  .btn:active { transform: translateY(1px); }
+
+  .return-feed { position: absolute; inset: 0; background: #0a1322; display: flex; flex-direction: column; }
+  .feed-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 18px 16px 10px; }
+  .feed-head h3 { font-size: 16px; }
+  .feed-head p { margin: 2px 0 0; color: var(--ink-3); font-size: 11px; }
+  .feed-scroll { overflow: auto; padding: 6px 16px 18px; display: grid; gap: 12px; }
+  .feed-card { background: #111d33; border: 1px solid #22304a; border-radius: 14px; overflow: hidden; }
+  .feed-cover { height: 86px; background: linear-gradient(135deg, #16324e, #3b2f74 55%, #0f3f4d); }
+  .feed-body { padding: 12px; }
+  .feed-body .tag { font-size: 10px; color: var(--accent-2); letter-spacing: .08em; }
+  .feed-body h4 { margin: 3px 0 4px; font-size: 14px; }
+  .feed-body p { margin: 0 0 10px; color: var(--ink-3); font-size: 12px; }
+  .feed-body .btn { width: 100%; padding: 9px; font-size: 12px; }
+  .feed-href { margin-top: 6px; font-family: var(--mono); font-size: 10px; color: var(--ink-3); word-break: break-all; }
+
+  /* ------- 控制台 ------- */
+  .controls { display: grid; gap: 12px; }
+  .control-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field { display: grid; gap: 5px; }
+  .field label { font-size: 11px; color: var(--ink-3); }
+  .field input, .field select {
+    background: #0b1526; color: var(--ink); border: 1px solid var(--line);
+    border-radius: 9px; padding: 8px 10px; font-size: 13px;
+  }
+  .field input[type="number"] { width: 100%; }
+  .seg { display: flex; gap: 6px; flex-wrap: wrap; }
+  .seg button {
+    flex: 1; min-width: 96px; border: 1px solid var(--line); background: #0b1526;
+    color: var(--ink-2); border-radius: 9px; padding: 8px 10px; font-size: 12px; cursor: pointer;
+  }
+  .seg button.active { border-color: var(--accent); color: var(--ink); background: #12233c; }
+
+  .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .action-grid .btn { text-align: left; font-size: 12px; }
+  .action-grid .btn small { display: block; color: var(--ink-3); font-size: 10px; margin-top: 2px; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .steps li {
+    display: flex; gap: 10px; align-items: flex-start; padding: 8px 10px;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--panel-2);
+    font-size: 12px; color: var(--ink-2);
+  }
+  .steps li .mark { font-family: var(--mono); width: 18px; flex: none; color: var(--ink-3); }
+  .steps li.active { border-color: var(--accent); color: var(--ink); background: #10233b; }
+  .steps li.active .mark { color: var(--accent); }
+  .steps li.pass .mark { color: var(--ok); }
+  .steps li.block .mark { color: var(--bad); }
+  .steps li.skip .mark { color: var(--warn); }
+
+  .log {
+    height: 190px; overflow: auto; background: #081120; border: 1px solid var(--line);
+    border-radius: 10px; padding: 10px; font-family: var(--mono); font-size: 11px; line-height: 1.55;
+  }
+  .log-line { color: var(--ink-2); }
+  .log-line .t { color: var(--ink-3); margin-right: 6px; }
+  .log-line.fire { color: var(--ok); }
+  .log-line.skip { color: var(--warn); }
+  .log-line.err { color: var(--bad); }
+  .log-line.sig { color: var(--accent-2); }
+
+  pre.out {
+    margin: 0; background: #081120; border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px; overflow: auto; max-height: 280px; font-size: 11px; color: #cfe3ff;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip { font-family: var(--mono); font-size: 11px; border: 1px solid #26405f; background: #0c1a2c; border-radius: 999px; padding: 3px 9px; color: var(--ink-2); }
+  .chip b { color: var(--accent-2); font-weight: 600; }
+  .chip.drop { border-color: #5b2b2b; color: #d99; }
+  .muted { color: var(--ink-3); font-size: 12px; }
+  .row-between { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .tag-ok { color: var(--ok); font-size: 11px; }
+  .tag-warn { color: var(--warn); font-size: 11px; }
+  .footnote { color: var(--ink-3); font-size: 11px; margin-top: 8px; }
+  .install-select {
+    width: 100%; margin-bottom: 12px; background: #0b1526; color: var(--ink);
+    border: 1px solid var(--line); border-radius: 9px; padding: 8px 10px; font-size: 13px;
+  }
+  .install-steps { margin: 8px 0 0; padding-left: 18px; color: var(--ink-2); font-size: 12px; }
+  .install-steps li { margin: 3px 0; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">P</div>
+    <div>
+      <h1>PWA 桌面留存 + 回流页状态机 · 交互沙盒</h1>
+      <p>零外部请求 · 单文件离线可用 · 与 src/retention-engine.mjs 同一套状态机规则</p>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <span class="pill ok" id="offlinePill">0 外部请求</span>
+  <span class="pill" id="sessionPill">会话未展示</span>
+  <button class="btn ghost" id="btnReset">重置会话</button>
+</header>
+
+<main class="layout">
+  <!-- 左：手机 + 操作 -->
+  <section>
+    <div class="card">
+      <div class="row-between">
+        <h2>模拟手机 · <span class="hint">点下面按钮看回流承接怎么发生</span></h2>
+        <span class="pill" id="formatPill">Popup 弹窗</span>
+      </div>
+      <div class="phone-shell" style="margin-top:12px">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="landing">
+              <div class="landing-brand"><span class="dot"></span>PulsePlay</div>
+              <div class="hero">
+                <div class="tag">本周精选 · 短剧试看</div>
+                <h3>今晚这集，先看三分钟</h3>
+                <p>觉得对味再继续，随时可以停。</p>
+              </div>
+              <button class="phone-cta" id="btnLandingCta">继续观看</button>
+              <div class="phone-note">点这个按钮 = 用户已完成转化，之后不再打扰</div>
+              <div class="mini-list">
+                <div class="mini-row"><span class="mini-thumb"></span>你刚才看到一半的那一期</div>
+                <div class="mini-row"><span class="mini-thumb"></span>3 分钟一集，通勤能看完</div>
+                <div class="mini-row"><span class="mini-thumb"></span>本周热播榜 · 按播放量排序</div>
+              </div>
+            </div>
+
+            <!-- 回流层：Popup / Feed 共用容器 -->
+            <div class="return-layer" id="returnLayer" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+      <p class="footnote">沙盒只<strong>模拟派发</strong> popstate / visibilitychange 信号，不真实劫持浏览器返回键；真实接入方式见 README「接入 5 步」。</p>
+    </div>
+
+    <div class="card">
+      <h2>实操按钮 <span class="hint">四个动作对应四种真实场景</span></h2>
+      <div class="action-grid" style="margin-top:10px">
+        <button class="btn" id="btnBack">模拟点返回键<small>popstate · 后台已 pushState 哨兵</small></button>
+        <button class="btn" id="btnRevisit">模拟切后台 5 秒<small>visibilitychange · hidden → visible</small></button>
+        <button class="btn" id="btnFormat">切换回流形态<small>Popup 弹窗 ↔ Feed 整屏信息流</small></button>
+        <button class="btn" id="btnInstall">模拟安装指引<small>iOS / Android / WebView / 已安装</small></button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>策略开关 <span class="hint">改完再点按钮，观察日志变化</span></h2>
+      <div class="controls" style="margin-top:10px">
+        <div class="control-row">
+          <div class="field">
+            <label for="selTrigger">触发模式 trigger</label>
+            <select id="selTrigger">
+              <option value="both" selected>both（返回键 + 切后台）</option>
+              <option value="back">back（只认返回键 / 鼠标移出）</option>
+              <option value="revisit">revisit（只认切后台回来）</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="selFrequency">频次策略 frequency</label>
+            <select id="selFrequency">
+              <option value="once_per_session" selected>once_per_session</option>
+              <option value="cooldown_hours">cooldown_hours</option>
+              <option value="always">always（仅演示）</option>
+            </select>
+          </div>
+        </div>
+        <div class="control-row">
+          <div class="field">
+            <label for="inDwell">进站已停留（秒）· 门槛 minDwellMs</label>
+            <input type="number" id="inDwell" min="0" step="1" value="5">
+          </div>
+          <div class="field">
+            <label for="inAway">切后台时长（秒）· 门槛 minAwaySeconds</label>
+            <input type="number" id="inAway" min="0" step="1" value="5">
+          </div>
+        </div>
+        <div class="seg" id="segFormat">
+          <button data-format="popup" class="active">Popup 弹窗</button>
+          <button data-format="feed">Feed 整屏信息流</button>
+        </div>
+        <div class="row-between">
+          <label class="muted"><input type="checkbox" id="chkConverted"> 模拟已转化（已点主 CTA）</label>
+          <span class="muted" id="policySummary"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 右：状态机 / 日志 / manifest / UTM -->
+  <section>
+    <div class="card">
+      <div class="row-between">
+        <h2>状态机 <span class="hint">信号 → 停留门槛 → 频次闸门 → 渲染</span></h2>
+        <span class="pill" id="statePill">Idle</span>
+      </div>
+      <ol class="steps" id="steps" style="margin-top:10px"></ol>
+    </div>
+
+    <div class="card">
+      <h2>触发日志 <span class="hint">带原因码，方便和单测对照</span></h2>
+      <div class="log" id="log" style="margin-top:10px"></div>
+    </div>
+
+    <div class="card">
+      <div class="row-between">
+        <h2>PWA Manifest <span class="hint">start_url 自动带桌面归因</span></h2>
+        <span class="tag-ok" id="manifestValid">校验：通过</span>
+      </div>
+      <div class="control-row" style="margin-top:10px">
+        <div class="field"><label for="inAppName">应用全名 name</label><input id="inAppName" value="PulsePlay"></div>
+        <div class="field"><label for="inShort">简称 short_name</label><input id="inShort" value="Pulse"></div>
+      </div>
+      <div class="control-row" style="margin-top:8px">
+        <div class="field"><label for="inTheme">主题色 theme_color</label><input id="inTheme" value="#0f172a"></div>
+        <div class="field"><label for="inStart">启动路径 start_url</label><input id="inStart" value="/offer"></div>
+      </div>
+      <pre class="out" id="manifestOut" style="margin-top:10px"></pre>
+    </div>
+
+    <div class="card">
+      <h2>UTM 透传 <span class="hint">utm_* / fbclid / ttclid 会带到每个 CTA</span></h2>
+      <div class="field" style="margin-top:10px">
+        <label for="inQuery">落地页当前 query string</label>
+        <input id="inQuery" value="?utm_source=facebook&utm_campaign=spring_sale&fbclid=fb-demo-001&ttclid=tt-demo-002&email=demo%40example.com">
+      </div>
+      <div class="chips" id="attrChips"></div>
+      <div class="muted" style="margin-top:10px">Popup 主 CTA：</div>
+      <pre class="out" id="popupHrefOut" style="margin-top:6px;max-height:none"></pre>
+      <div class="muted" style="margin-top:10px">Feed 卡片 CTA：</div>
+      <pre class="out" id="feedHrefOut" style="margin-top:6px;max-height:none"></pre>
+      <p class="footnote">只透传广告归因白名单参数；email 之类的业务参数会被丢弃，避免带到下一跳。</p>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------------------------------------------------------------------------
+  // 沙盒内联状态机（与 src/retention-engine.mjs 同规则；真实项目请 import 引擎）
+  // ---------------------------------------------------------------------------
+  var ATTRIBUTION_RE = /^(utm_[a-z0-9_]+|fbclid|ttclid)$/i;
+
+  var state = {
+    format: 'popup',
+    trigger: 'both',
+    frequency: 'once_per_session',
+    minDwellSec: 5,
+    minAwaySec: 5,
+    converted: false,
+    sessionFired: false,
+    lastFiredAt: null,
+    pageEnteredAt: Date.now(),
+    overlay: null,
+    machine: null,
+    stepIndex: -1
+  };
+
+  var STORAGE_KEY = 'rrk-sandbox-session';
+
+  function $(id) { return document.getElementById(id); }
+  function pad2(n) { return String(n).padStart(2, '0'); }
+  function nowStamp() {
+    var d = new Date();
+    return pad2(d.getMinutes()) + ':' + pad2(d.getSeconds()) + '.' + String(d.getMilliseconds()).padStart(3, '0');
+  }
+
+  function log(message, kind) {
+    var line = document.createElement('div');
+    line.className = 'log-line ' + (kind || '');
+    line.innerHTML = '<span class="t">' + nowStamp() + '</span>' + message;
+    var logEl = $('log');
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function filterAttribution(params) {
+    var out = {};
+    Object.keys(params).forEach(function (key) {
+      if (params[key] !== '' && params[key] !== null && params[key] !== undefined && ATTRIBUTION_RE.test(key)) {
+        out[key] = String(params[key]);
+      }
+    });
+    return out;
+  }
+
+  function appendAttribution(href, attribution) {
+    var source = href || '/';
+    var hashIndex = source.indexOf('#');
+    var hash = hashIndex >= 0 ? source.slice(hashIndex) : '';
+    var clean = hashIndex >= 0 ? source.slice(0, hashIndex) : source;
+    var queryIndex = clean.indexOf('?');
+    var path = queryIndex >= 0 ? clean.slice(0, queryIndex) : clean;
+    var search = new URLSearchParams(queryIndex >= 0 ? clean.slice(queryIndex + 1) : '');
+    Object.keys(filterAttribution(attribution)).forEach(function (key) { search.set(key, attribution[key]); });
+    var query = search.toString();
+    return path + (query ? '?' + query : '') + hash;
+  }
+
+  function evaluateTrigger(signal, dwellMs, awayMs) {
+    var signalMode = signal === 'revisit' ? 'revisit' : 'back';
+    if (state.trigger !== 'both' && state.trigger !== signalMode) {
+      return { matched: false, reason: 'trigger_mismatch' };
+    }
+    if (dwellMs < state.minDwellSec * 1000) {
+      return { matched: false, reason: 'dwell_below_minimum' };
+    }
+    if (signalMode === 'revisit' && awayMs < state.minAwaySec * 1000) {
+      return { matched: false, reason: 'away_too_short' };
+    }
+    return { matched: true, reason: 'matched' };
+  }
+
+  function shouldFire() {
+    if (state.converted) return { fire: false, reason: 'converted_suppressed' };
+    if (state.frequency === 'once_per_session') {
+      return state.sessionFired ? { fire: false, reason: 'session_cap_reached' } : { fire: true, reason: 'allowed' };
+    }
+    if (state.frequency === 'cooldown_hours') {
+      var cooldownMs = 24 * 60 * 60 * 1000;
+      if (state.lastFiredAt && Date.now() - state.lastFiredAt < cooldownMs) {
+        return { fire: false, reason: 'cooldown_active' };
+      }
+      return { fire: true, reason: 'allowed' };
+    }
+    return { fire: true, reason: 'allowed' };
+  }
+
+  function readAttribution() {
+    return filterAttribution(Object.fromEntries(new URLSearchParams($('inQuery').value.replace(/^\?/, ''))));
+  }
+
+  function buildPopupModel() {
+    var attribution = readAttribution();
+    var params = new URLSearchParams($('inQuery').value.replace(/^\?/, ''));
+    return {
+      format: 'popup',
+      title: '先别走，还有 3 集没看',
+      subtitle: '刚才那一集停在高能处，接着看更顺',
+      hookCode: 'COMEBACK',
+      countdownSeconds: 15 * 60,
+      cta: { label: '继续看下一集', href: appendAttribution('/watch/next?ref=return', attribution) },
+      dismissLabel: '先不用，继续浏览',
+      attribution: Object.fromEntries(params)
+    };
+  }
+
+  function buildFeedModel() {
+    var attribution = readAttribution();
+    return {
+      format: 'feed',
+      title: '换个方向继续看',
+      subtitle: '根据你刚才的浏览挑的，点哪张都不会丢进度',
+      cards: [
+        { tag: '接着看', title: '你刚才那一集 · 第 7 集', subtitle: '从断点继续，约 3 分钟', href: '/series/continue?ep=7', ctaLabel: '继续播放' },
+        { tag: '换口味', title: '3 分钟一集 · 通勤系列', subtitle: '每集独立成篇，随时能停', href: '/series/commute', ctaLabel: '看这个系列' },
+        { tag: '热播', title: '本周热播榜 TOP 10', subtitle: '按本周播放量排序', href: '/series/ranking', ctaLabel: '查看榜单' }
+      ].map(function (card) {
+        return {
+          tag: card.tag,
+          title: card.title,
+          subtitle: card.subtitle,
+          href: card.href,
+          cta: { label: card.ctaLabel, href: appendAttribution(card.href, attribution) }
+        };
+      }),
+      dismissLabel: '回到刚才的页面',
+      attribution: readAttribution()
+    };
+  }
+
+  // ---------------------------------------------------------------------------
+  // 状态机渲染
+  // ---------------------------------------------------------------------------
+  var STEP_DEFS = [
+    { id: 'armed', label: '哨兵就绪：history.pushState 压入一条记录，返回键可被捕获' },
+    { id: 'signal', label: '捕获信号：popstate / visibilitychange / mouseout' },
+    { id: 'dwell', label: '停留门槛：进站时长 ≥ minDwellMs（防误伤秒退）' },
+    { id: 'frequency', label: '频次闸门：同会话一次 / 冷却期 / 已转化静默' },
+    { id: 'render', label: '渲染承接：Popup 弹窗 或 Feed 整屏信息流' },
+    { id: 'done', label: '结束：用户继续浏览或完成转化' }
+  ];
+
+  function renderSteps(statusMap) {
+    var container = $('steps');
+    container.innerHTML = '';
+    STEP_DEFS.forEach(function (step) {
+      var status = statusMap[step.id] || 'idle';
+      var li = document.createElement('li');
+      li.className = status;
+      var mark = status === 'pass' ? '✓' : status === 'block' ? '×' : status === 'skip' ? '!' : status === 'active' ? '▸' : '○';
+      li.innerHTML = '<span class="mark">' + mark + '</span><span>' + step.label + '</span>';
+      container.appendChild(li);
+    });
+  }
+
+  function setStatePill(text, kind) {
+    var pill = $('statePill');
+    pill.textContent = text;
+    pill.className = 'pill' + (kind ? ' ' + kind : '');
+  }
+
+  // ---------------------------------------------------------------------------
+  // 回流层渲染
+  // ---------------------------------------------------------------------------
+  function closeOverlay(reason) {
+    state.overlay = null;
+    $('returnLayer').className = 'return-layer';
+    $('returnLayer').innerHTML = '';
+    if (reason) log('关闭回流层：' + reason, '');
+  }
+
+  function renderPopup(model, onDismiss) {
+    state.overlay = 'popup';
+    var layer = $('returnLayer');
+    layer.className = 'return-layer open';
+    layer.innerHTML =
+      '<div class="return-popup">' +
+        '<div class="popup-card">' +
+          '<span class="hook">福利码 ' + model.hookCode + '</span>' +
+          '<h3>' + model.title + '</h3>' +
+          '<p>' + model.subtitle + '</p>' +
+          '<div class="countdown">倒计时 ' + Math.floor(model.countdownSeconds / 60) + ' 分钟后失效（演示）</div>' +
+          '<div class="popup-actions">' +
+            '<button class="btn primary" data-action="cta">' + model.cta.label + ' →</button>' +
+            '<button class="btn ghost" data-action="dismiss">' + model.dismissLabel + '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    layer.querySelector('[data-action="cta"]').addEventListener('click', function () {
+      markConverted('Popup 主 CTA');
+      closeOverlay('用户点了主 CTA');
+    });
+    layer.querySelector('[data-action="dismiss"]').addEventListener('click', function () {
+      closeOverlay('用户选择继续浏览');
+      onDismiss && onDismiss();
+    });
+    log('已渲染 popup：' + model.title + '（CTA ' + model.cta.href + '）', 'fire');
+  }
+
+  function renderFeed(model) {
+    state.overlay = 'feed';
+    var layer = $('returnLayer');
+    layer.className = 'return-layer open';
+    var cardsHtml = model.cards.map(function (card) {
+      return '<div class="feed-card">' +
+        '<div class="feed-cover"></div>' +
+        '<div class="feed-body">' +
+          '<div class="tag">' + card.tag + '</div>' +
+          '<h4>' + card.title + '</h4>' +
+          '<p>' + card.subtitle + '</p>' +
+          '<button class="btn primary" data-href="' + card.cta.href + '">' + card.cta.label + '</button>' +
+          '<div class="feed-href">' + card.cta.href + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    layer.innerHTML =
+      '<div class="return-feed">' +
+        '<div class="feed-head">' +
+          '<div><h3>' + model.title + '</h3><p>' + model.subtitle + '</p></div>' +
+          '<button class="btn ghost" data-action="dismiss">' + model.dismissLabel + '</button>' +
+        '</div>' +
+        '<div class="feed-scroll">' + cardsHtml + '</div>' +
+      '</div>';
+    layer.querySelectorAll('[data-href]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        markConverted('Feed 卡片 CTA');
+        closeOverlay('用户点了卡片 CTA');
+      });
+    });
+    layer.querySelector('[data-action="dismiss"]').addEventListener('click', function () {
+      closeOverlay('用户从 Feed 返回');
+    });
+    log('已渲染 feed：' + model.cards.length + ' 张卡片，每张都带归因参数', 'fire');
+  }
+
+  function markConverted(source) {
+    state.converted = true;
+    $('chkConverted').checked = true;
+    $('sessionPill').textContent = '已转化 · 自动静默';
+    log('已标记转化（来源：' + source + '），后续信号将命中 converted_suppressed', 'skip');
+  }
+
+  // ---------------------------------------------------------------------------
+  // 主状态机
+  // ---------------------------------------------------------------------------
+  function runMachine(signal, awaySec) {
+    var dwellMs = state.minDwellSec * 1000; // 沙盒用「模拟已停留」= 门槛值，方便点一下就演示
+    var awayMs = awaySec * 1000;
+    var status = { armed: 'pass', signal: 'pass' };
+    state.machine = signal;
+    setStatePill('Evaluating', '');
+    renderSteps(status);
+    log('信号：' + signal + ' · 模拟停留 ' + state.minDwellSec + 's · 离开 ' + awaySec + 's', 'sig');
+
+    var trigger = evaluateTrigger(signal, dwellMs, awayMs);
+    if (!trigger.matched) {
+      status.dwell = trigger.reason === 'dwell_below_minimum' ? 'block' : 'skip';
+      status.frequency = 'skip';
+      status.render = 'skip';
+      renderSteps(status);
+      setStatePill('Blocked', '');
+      log('触发条件未成立：' + trigger.reason, 'skip');
+      return;
+    }
+    status.dwell = 'pass';
+    renderSteps(status);
+
+    var gate = shouldFire();
+    if (!gate.fire) {
+      status.frequency = 'block';
+      status.render = 'skip';
+      renderSteps(status);
+      setStatePill('Suppressed', '');
+      log('频次闸门拦截：' + gate.reason, 'skip');
+      return;
+    }
+
+    status.frequency = 'pass';
+    status.render = 'active';
+    renderSteps(status);
+
+    if (state.sessionFired) {
+      // 理论上不会到这里（once_per_session 已拦截），兜底
+      log('异常：会话已展示却再次放行', 'err');
+    }
+    state.sessionFired = true;
+    state.lastFiredAt = Date.now();
+    $('sessionPill').textContent = '本会话已展示 1 次';
+    saveSession();
+
+    if (state.format === 'popup') {
+      renderPopup(buildPopupModel());
+    } else {
+      renderFeed(buildFeedModel());
+    }
+    status.render = 'pass';
+    status.done = 'active';
+    renderSteps(status);
+    setStatePill('Shown · ' + (state.format === 'popup' ? 'Popup' : 'Feed'), 'ok');
+    saveSession();
+  }
+
+  // ---------------------------------------------------------------------------
+  // 会话持久化（sessionStorage，模拟真实频次锁；沙盒也支持重置）
+  // ---------------------------------------------------------------------------
+  function saveSession() {
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+        sessionFired: state.sessionFired,
+        lastFiredAt: state.lastFiredAt,
+        converted: state.converted
+      }));
+    } catch (error) { /* 隐私模式忽略 */ }
+  }
+
+  function loadSession() {
+    try {
+      var raw = sessionStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      var data = JSON.parse(raw);
+      state.sessionFired = Boolean(data.sessionFired);
+      state.lastFiredAt = data.lastFiredAt || null;
+      state.converted = Boolean(data.converted);
+      $('chkConverted').checked = state.converted;
+      if (state.sessionFired) $('sessionPill').textContent = '本会话已展示 1 次';
+      if (state.converted) $('sessionPill').textContent = '已转化 · 自动静默';
+    } catch (error) { /* ignore */ }
+  }
+
+  // ---------------------------------------------------------------------------
+  // 安装指引
+  // ---------------------------------------------------------------------------
+  var INSTALL_PROFILES = {
+    'ios-safari': {
+      ua: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1',
+      title: 'iOS Safari：分享 → 添加到主屏幕',
+      steps: ['点 Safari 底部的分享按钮', '向下滑，选择「添加到主屏幕」', '确认名称后点「添加」，桌面图标就出现了']
+    },
+    'android-chrome': {
+      ua: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Mobile Safari/537.36',
+      title: 'Android Chrome：监听 beforeinstallprompt 后再弹',
+      steps: ['在 install 事件里缓存 beforeinstallprompt', '用户点「安装」按钮时调用 prompt()', '监听 userChoice 记录 accepted / dismissed']
+    },
+    'webview': {
+      ua: 'Mozilla/5.0 (Linux; Android 13; SM-S918B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/112.0.5615.136 Mobile Safari/537.36',
+      title: 'App 内置浏览器：先引导去外部浏览器',
+      steps: ['点右上角「…」打开菜单', '选择「在浏览器中打开」', '在外部浏览器里再走 iOS / Android 安装引导']
+    }
+  };
+
+  function detectProfile(ua) {
+    if (/FBAN|FBAV|Instagram|Line\/|MicroMessenger|TikTok|musical_ly|; wv\)/i.test(ua)) return 'webview';
+    if (/iPhone|iPad|iPod/i.test(ua)) return 'ios-safari';
+    if (/Android/i.test(ua)) return /Chrome\/|Chromium\//i.test(ua) ? 'android-chrome' : 'webview';
+    return 'android-chrome';
+  }
+
+  function renderInstallBody(profileId) {
+    var profile = INSTALL_PROFILES[profileId] || INSTALL_PROFILES['ios-safari'];
+    var detected = detectProfile(profile.ua);
+    var options = [
+      ['ios-safari', 'iOS Safari'],
+      ['android-chrome', 'Android Chrome'],
+      ['webview', 'App 内置 WebView']
+    ];
+    return '<select class="install-select" id="installSelect">' + options.map(function (option) {
+      return '<option value="' + option[0] + '"' + (option[0] === profileId ? ' selected' : '') + '>' + option[1] + '</option>';
+    }).join('') + '</select>' +
+      '<h3>' + profile.title + '</h3>' +
+      '<ol class="install-steps">' + profile.steps.map(function (step) { return '<li>' + step + '</li>'; }).join('') + '</ol>' +
+      '<p class="footnote">UA 识别结果：' + detected + '（规则顺序：standalone &gt; WebView &gt; iOS &gt; Android &gt; 桌面）</p>';
+  }
+
+  function bindInstallSelect(layer) {
+    var select = layer.querySelector('#installSelect');
+    if (!select) return;
+    select.addEventListener('change', function (event) {
+      var nextId = event.target.value;
+      layer.querySelector('#installBody').innerHTML = renderInstallBody(nextId);
+      bindInstallSelect(layer);
+      log('切换安装环境：' + nextId, 'sig');
+    });
+  }
+
+  function showInstall(profileId) {
+    var profile = INSTALL_PROFILES[profileId] || INSTALL_PROFILES['ios-safari'];
+    var detected = detectProfile(profile.ua);
+    state.overlay = 'install';
+    var layer = $('returnLayer');
+    layer.className = 'return-layer open';
+    layer.innerHTML =
+      '<div class="return-popup" style="align-items:flex-start;padding-top:46px">' +
+        '<div class="popup-card">' +
+          '<span class="hook">PWA 安装引导</span>' +
+          '<div id="installBody">' + renderInstallBody(profileId) + '</div>' +
+          '<div class="popup-actions"><button class="btn ghost" data-action="close">关闭</button></div>' +
+        '</div>' +
+      '</div>';
+    layer.querySelector('[data-action="close"]').addEventListener('click', function () {
+      closeOverlay('关闭安装引导');
+    });
+    bindInstallSelect(layer);
+    log('展示安装指引：' + profileId + '（识别为 ' + detected + '）', 'sig');
+  }
+
+  // ---------------------------------------------------------------------------
+  // Manifest / UTM 面板
+  // ---------------------------------------------------------------------------
+  function generateManifest() {
+    var name = $('inAppName').value.trim() || 'PulsePlay';
+    var shortName = $('inShort').value.trim() || 'Pulse';
+    var startUrl = $('inStart').value.trim() || '/';
+    var theme = $('inTheme').value.trim() || '#0f172a';
+    var queryIndex = startUrl.indexOf('?');
+    var path = queryIndex >= 0 ? startUrl.slice(0, queryIndex) : startUrl;
+    var parsed = new URLSearchParams(queryIndex >= 0 ? startUrl.slice(queryIndex + 1) : '');
+    parsed.set('utm_source', 'pwa_homescreen');
+    var q = parsed.toString();
+    return {
+      name: name,
+      short_name: shortName,
+      description: '',
+      lang: 'zh-CN',
+      start_url: path + (q ? '?' + q : ''),
+      scope: '/',
+      display: 'standalone',
+      orientation: 'portrait',
+      theme_color: theme,
+      background_color: theme,
+      icons: [
+        { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+        { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+        { src: '/icons/maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+      ]
+    };
+  }
+
+  function renderManifest() {
+    var manifest = generateManifest();
+    $('manifestOut').textContent = JSON.stringify(manifest, null, 2);
+    var errors = [];
+    if (!manifest.name) errors.push('缺少 name');
+    if (!manifest.short_name) errors.push('缺少 short_name');
+    if (!manifest.icons.some(function (icon) { return icon.sizes === '192x192'; })) errors.push('缺少 192 图标');
+    if (!manifest.icons.some(function (icon) { return icon.sizes === '512x512'; })) errors.push('缺少 512 图标');
+    var validEl = $('manifestValid');
+    validEl.textContent = errors.length ? '校验：' + errors.join('；') : '校验：通过';
+    validEl.className = errors.length ? 'tag-warn' : 'tag-ok';
+    log('manifest 已更新：start_url = ' + manifest.start_url, '');
+  }
+
+  function renderAttribution() {
+    var raw = Object.fromEntries(new URLSearchParams($('inQuery').value.replace(/^\?/, '')));
+    var kept = filterAttribution(raw);
+    var dropped = Object.keys(raw).filter(function (key) { return !(key in kept); });
+    var chips = $('attrChips');
+    chips.innerHTML = Object.keys(kept).map(function (key) {
+      return '<span class="chip"><b>' + key + '</b>=' + kept[key] + '</span>';
+    }).join('') ||
+      '<span class="chip">（无白名单参数，CTA 将保持原链接）</span>';
+    dropped.forEach(function (key) {
+      chips.innerHTML += '<span class="chip drop">丢弃 ' + key + '</span>';
+    });
+
+    var popup = buildPopupModel();
+    $('popupHrefOut').textContent = popup.cta.href;
+    var feed = buildFeedModel();
+    $('feedHrefOut').textContent = feed.cards.map(function (card) { return card.cta.href; }).join('\n');
+    log('UTM 透传更新：保留 ' + Object.keys(kept).length + ' 个参数，丢弃 ' + dropped.length + ' 个', '');
+  }
+
+  function renderPolicySummary() {
+    $('policySummary').textContent = state.trigger + ' · ' + state.frequency + ' · ≥' + state.minDwellSec + 's';
+  }
+
+  // ---------------------------------------------------------------------------
+  // 事件绑定
+  // ---------------------------------------------------------------------------
+  function setFormat(format) {
+    state.format = format;
+    $('formatPill').textContent = format === 'popup' ? 'Popup 弹窗' : 'Feed 整屏信息流';
+    document.querySelectorAll('#segFormat button').forEach(function (button) {
+      button.classList.toggle('active', button.getAttribute('data-format') === format);
+    });
+    if (state.overlay === 'popup' || state.overlay === 'feed') {
+      closeOverlay('切换形态');
+    }
+  }
+
+  $('btnBack').addEventListener('click', function () {
+    log('popstate：用户按下返回键（模拟派发，页面未真实跳走）', 'sig');
+    runMachine('back', 0);
+  });
+
+  $('btnRevisit').addEventListener('click', function () {
+    log('visibilitychange：hidden 5 秒后重新 visible（模拟）', 'sig');
+    runMachine('revisit', 5);
+  });
+
+  $('btnFormat').addEventListener('click', function () {
+    setFormat(state.format === 'popup' ? 'feed' : 'popup');
+    log('回流形态切换为：' + state.format, '');
+  });
+
+  $('btnInstall').addEventListener('click', function () {
+    showInstall('ios-safari');
+  });
+
+  $('btnLandingCta').addEventListener('click', function () {
+    markConverted('落地页主 CTA');
+  });
+
+  $('btnReset').addEventListener('click', function () {
+    state.sessionFired = false;
+    state.lastFiredAt = null;
+    state.converted = false;
+    state.overlay = null;
+    $('chkConverted').checked = false;
+    $('returnLayer').className = 'return-layer';
+    $('returnLayer').innerHTML = '';
+    $('sessionPill').textContent = '会话未展示';
+    setStatePill('Idle', '');
+    renderSteps({});
+    try { sessionStorage.removeItem(STORAGE_KEY); } catch (error) { /* ignore */ }
+    log('会话已重置：频次锁与已转化状态清空', '');
+  });
+
+  $('chkConverted').addEventListener('change', function () {
+    state.converted = $('chkConverted').checked;
+    $('sessionPill').textContent = state.converted ? '已转化 · 自动静默' : (state.sessionFired ? '本会话已展示 1 次' : '会话未展示');
+    log('已转化状态：' + (state.converted ? '是（将静默）' : '否'), '');
+    saveSession();
+  });
+
+  $('selTrigger').addEventListener('change', function () {
+    state.trigger = $('selTrigger').value;
+    renderPolicySummary();
+    log('触发模式：' + state.trigger, '');
+  });
+
+  $('selFrequency').addEventListener('change', function () {
+    state.frequency = $('selFrequency').value;
+    renderPolicySummary();
+    log('频次策略：' + state.frequency, '');
+  });
+
+  $('inDwell').addEventListener('input', function () {
+    state.minDwellSec = Math.max(0, Number($('inDwell').value) || 0);
+    renderPolicySummary();
+  });
+
+  $('inAway').addEventListener('input', function () {
+    state.minAwaySec = Math.max(0, Number($('inAway').value) || 0);
+    renderPolicySummary();
+  });
+
+  document.querySelectorAll('#segFormat button').forEach(function (button) {
+    button.addEventListener('click', function () { setFormat(button.getAttribute('data-format')); });
+  });
+
+  ['inAppName', 'inShort', 'inTheme', 'inStart'].forEach(function (id) {
+    $(id).addEventListener('input', renderManifest);
+  });
+
+  $('inQuery').addEventListener('input', renderAttribution);
+
+  // 初始化
+  loadSession();
+  renderSteps({ armed: 'pass' });
+  renderPolicySummary();
+  renderManifest();
+  renderAttribution();
+  log('沙盒就绪：哨兵已压入（模拟），等待触发信号', 'sig');
+})();
+</script>
+</body>
+</html>

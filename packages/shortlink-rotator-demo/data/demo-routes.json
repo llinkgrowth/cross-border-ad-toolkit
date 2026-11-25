@@ -1,0 +1,137 @@
+{
+  "version": "1.0.0",
+  "description": "Demo route configurations for Shortlink Multi-Target Rotator (WhatsApp agent rotation, regional landing page quota routing, round-robin & random pools).",
+  "routes": [
+    {
+      "slug": "wa-vip",
+      "name": "Southeast Asia WhatsApp Customer Service Desk (Weighted + Sticky)",
+      "mode": "weighted",
+      "sticky": true,
+      "targets": [
+        {
+          "id": "agent-alice",
+          "label": "Alice (Senior Support · EN/ZH)",
+          "url": "https://wa.me/6581001001?text=Hi%20Alice%2C%20I%20need%20product%20consultation",
+          "weight": 50,
+          "daily_limit": 500,
+          "enabled": true
+        },
+        {
+          "id": "agent-bryan",
+          "label": "Bryan (Account Manager · EN/MS)",
+          "url": "https://wa.me/60123002002?text=Hi%20Bryan%2C%20I%20need%20product%20consultation",
+          "weight": 30,
+          "daily_limit": 300,
+          "enabled": true
+        },
+        {
+          "id": "agent-chloe",
+          "label": "Chloe (Onboarding Specialist · EN)",
+          "url": "https://wa.me/6581001003?text=Hi%20Chloe%2C%20I%20need%20product%20consultation",
+          "weight": 20,
+          "daily_limit": 200,
+          "enabled": true
+        },
+        {
+          "id": "agent-david-offline",
+          "label": "David (Night Shift · Offline)",
+          "url": "https://wa.me/6581001004?text=Hi%20David",
+          "weight": 40,
+          "daily_limit": 200,
+          "enabled": false
+        }
+      ]
+    },
+    {
+      "slug": "promo-quota",
+      "name": "Regional Promo Landing Page Pool (Daily Quota Cap + Auto Fallback)",
+      "mode": "quota",
+      "sticky": false,
+      "targets": [
+        {
+          "id": "lp-tier1-main",
+          "label": "Primary Storefront (Fallback Anchor · Cap 300)",
+          "url": "https://shop.example.com/deals/main",
+          "weight": 40,
+          "daily_limit": 300,
+          "today_clicks": 0,
+          "enabled": true
+        },
+        {
+          "id": "lp-tier2-flash",
+          "label": "Flash Sale Mirror B (Cap 250)",
+          "url": "https://shop.example.com/deals/flash-b",
+          "weight": 35,
+          "daily_limit": 250,
+          "today_clicks": 0,
+          "enabled": true
+        },
+        {
+          "id": "lp-tier3-vip",
+          "label": "Early Bird Coupon Page C (Cap 150)",
+          "url": "https://shop.example.com/deals/early-c",
+          "weight": 25,
+          "daily_limit": 150,
+          "today_clicks": 0,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "slug": "tg-Shift",
+      "name": "Telegram Community Concierge (Round-Robin Shift Rotation)",
+      "mode": "round_robin",
+      "sticky": true,
+      "targets": [
+        {
+          "id": "tg-desk-1",
+          "label": "Telegram Desk #1",
+          "url": "https://t.me/global_desk_01?text=Hello%20Desk%201",
+          "weight": 1,
+          "daily_limit": 1000,
+          "enabled": true
+        },
+        {
+          "id": "tg-desk-2",
+          "label": "Telegram Desk #2",
+          "url": "https://t.me/global_desk_02?text=Hello%20Desk%202",
+          "weight": 1,
+          "daily_limit": 1000,
+          "enabled": true
+        },
+        {
+          "id": "tg-desk-3",
+          "label": "Telegram Desk #3",
+          "url": "https://t.me/global_desk_03?text=Hello%20Desk%203",
+          "weight": 1,
+          "daily_limit": 1000,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "slug": "ab-landing",
+      "name": "Landing Page A/B Creative Split (Pure Random 50/50)",
+      "mode": "random",
+      "sticky": true,
+      "targets": [
+        {
+          "id": "variant-hero-video",
+          "label": "Variant A · Video Hero",
+          "url": "https://landing.example.com/v1-video",
+          "weight": 50,
+          "daily_limit": 5000,
+          "enabled": true
+        },
+        {
+          "id": "variant-hero-carousel",
+          "label": "Variant B · Interactive Carousel",
+          "url": "https://landing.example.com/v2-carousel",
+          "weight": 50,
+          "daily_limit": 5000,
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}

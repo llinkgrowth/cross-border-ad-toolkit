@@ -1,0 +1,35 @@
+name: Bug Report
+description: Report an issue with RefCode parsing, HMAC webhook verification, or the safe broadcast state machine
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug report! Please share a reproducible command or payload snippet.
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - RefCode Injection & Parsing (injectRefCode / parseInboundRefCode)
+        - Webhook HMAC Sign & Verify (signWebhookPayload / verifyWebhookSignature)
+        - Idempotency Store (DeduplicationStore)
+        - Safe Broadcast State Machine (SafeBroadcastQueue)
+        - Offline Sandbox (index.html) / CLI (cli.mjs)
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction Steps / Command
+      placeholder: |
+        node cli.mjs simulate-broadcast --count 10 --tier medium --inject-unknown-at 4 --json
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs. Actual Behavior
+    validations:
+      required: true

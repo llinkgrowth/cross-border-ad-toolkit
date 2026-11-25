@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Node 20 · 测试 + 多语言校验 + 渲染烟测
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Syntax check
+        run: |
+          node --check src/i18n-builder.mjs
+          node --check cli.mjs
+          node --check test/starter.test.mjs
+          node --check templates/pwa-app-landing/sw.js
+
+      - name: Unit tests (zero dependencies, no network)
+        run: npm test
+
+      - name: i18n check (key alignment, RTL, button overflow, number/currency)
+        run: npm run check
+
+      - name: Render smoke (3 templates × Arabic RTL)
+        run: |
+          for template in cod-single-page whatsapp-lead-page pwa-app-landing; do
+            node cli.mjs render --template "$template" --locale ar --out "/tmp/$template-ar.html"
+            test -s "/tmp/$template-ar.html"
+          done
+
+      - name: Confirm no third-party dependencies
+        run: |
+          node -e "const p = JSON.parse(require('fs').readFileSync('package.json', 'utf8')); const count = Object.keys(p.dependencies || {}).length + Object.keys(p.devDependencies || {}).length; if (count !== 0) { console.error('third-party dependencies found'); process.exit(1); }"
+

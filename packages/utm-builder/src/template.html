@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UTM 链接生成器 · UTM Builder</title>
+<meta name="description" content="免费开源的 UTM 链接生成器。中文界面、英文参数名，纯浏览器本地运行，不收集任何数据。">
+<!-- INLINE:styles.css -->
+</head>
+<body>
+<main class="wrap">
+
+  <header class="hero">
+    <h1>UTM 链接生成器</h1>
+    <p>UTM Builder — 给投放链接加上可追溯的参数。全部在你自己的浏览器里完成。</p>
+  </header>
+
+  <section class="card">
+    <label class="label" for="baseUrl">落地页 URL<em>Landing page URL</em></label>
+    <input id="baseUrl" type="text" inputmode="url" autocomplete="off" spellcheck="false"
+           placeholder="example.com/landing">
+    <span class="hint">不写协议时会自动补 https://；原有 utm_* 参数会先清除再写入。</span>
+
+    <fieldset class="presets">
+      <legend>预设渠道<em style="font-style:normal;font-weight:400;color:#6b7280">Presets</em></legend>
+      <div class="chips" id="presets"></div>
+    </fieldset>
+
+    <div class="grid">
+      <div>
+        <label class="label" for="f-utm_source">来源<em>utm_source</em></label>
+        <input id="f-utm_source" data-key="utm_source" type="text" autocomplete="off"
+               spellcheck="false" placeholder="facebook">
+      </div>
+      <div>
+        <label class="label" for="f-utm_medium">媒介<em>utm_medium</em></label>
+        <input id="f-utm_medium" data-key="utm_medium" type="text" autocomplete="off"
+               spellcheck="false" placeholder="social">
+      </div>
+      <div>
+        <label class="label" for="f-utm_campaign">活动<em>utm_campaign</em></label>
+        <input id="f-utm_campaign" data-key="utm_campaign" type="text" autocomplete="off"
+               spellcheck="false" placeholder="spring_sale">
+      </div>
+      <div>
+        <label class="label" for="f-utm_term">关键词<em>utm_term</em></label>
+        <input id="f-utm_term" data-key="utm_term" type="text" autocomplete="off"
+               spellcheck="false" placeholder="running_shoes">
+      </div>
+      <div>
+        <label class="label" for="f-utm_content">内容<em>utm_content</em></label>
+        <input id="f-utm_content" data-key="utm_content" type="text" autocomplete="off"
+               spellcheck="false" placeholder="video_a">
+      </div>
+      <div>
+        <label class="label" for="f-utm_id">标识<em>utm_id</em></label>
+        <input id="f-utm_id" data-key="utm_id" type="text" autocomplete="off"
+               spellcheck="false" placeholder="20261124_a1">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="reset" class="btn ghost" type="button">重置</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="result-head">
+      <span class="label">生成结果<em>Generated URL</em></span>
+      <button id="copy" class="btn" type="button" disabled>一键复制</button>
+    </div>
+    <output id="out" class="out empty" aria-live="polite">填写上面的落地页 URL 和至少一个参数，这里会实时生成链接。</output>
+    <p id="status" class="status" role="status"></p>
+  </section>
+
+  <section class="card">
+    <div class="result-head">
+      <span class="label">最近 5 条<em>Recent</em></span>
+      <button id="clearRecent" class="btn ghost sm" type="button">清空</button>
+    </div>
+    <ul id="recent" class="recent"></ul>
+    <p id="recentEmpty" class="hint">复制成功后会保存在本机浏览器里，最多 5 条。</p>
+  </section>
+
+  <footer>
+    <p>本工具不收集任何数据：没有请求、没有埋点、没有账号体系，生成的链接不会离开你的浏览器。</p>
+    <p>由 <a href="https://builder.ipcloak.ai" rel="noopener">builder.ipcloak.ai</a> 提供 · 291 套模板 / 69 种语言</p>
+  </footer>
+
+</main>
+
+<!-- INLINE:core+app -->
+</body>
+</html>

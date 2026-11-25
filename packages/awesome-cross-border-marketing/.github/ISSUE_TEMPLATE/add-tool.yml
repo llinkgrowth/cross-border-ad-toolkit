@@ -1,0 +1,63 @@
+name: Add a tool / 推荐工具
+description: 推荐一个出海投放相关工具（会按 data/tools.json schema 审核）
+title: "[tool] "
+labels: ["tool-suggestion"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢推荐。合并前请确认：工具与出海投放相关、你真的用过或认真评估过、**没有付费收录或 affiliate 关系**。
+        维护方自己的产品请勾选「维护方产品」，并说明为什么它不该置顶（我们的规则：自家条目排分类内非首位）。
+  - type: input
+    id: name
+    attributes:
+      label: 工具名称
+      placeholder: Example Tool
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: 官网链接
+      description: 必须是最终可访问的 https:// 链接，不要留 {ORG} 占位符
+      placeholder: https://example.com/
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: 分类
+      options:
+        - landing-page-builders / 落地页与建站
+        - templates-design-references / 模板与设计参考
+        - link-routing-short-links / 分流与短链
+        - whatsapp-support-lead-management / 客服与线索管理
+        - pixels-analytics-attribution / 像素与分析
+        - utm-campaign-tracking / UTM 与投放追踪
+        - ad-research-creative / 广告情报与素材
+        - localization / 多语言与本地化
+        - open-source-building-blocks / 开源基建
+        - communities-learning / 社区与学习
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: 一句话描述（中性）
+      description: 写「它做什么、适合谁」；不写收费信息与效果保证，不贬低同行
+      placeholder: One neutral sentence about what it does and who it fits.
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 确认项
+      options:
+        - label: 我真的用过或认真评估过这个工具
+          required: true
+        - label: 我与该工具没有付费收录 / affiliate 关系
+          required: true
+        - label: "这是维护方自己的产品（maintainedByUs: true），并同意排在分类内非首位"
+          required: false
+        - label: 我接受维护方按「不收付费、不做付费排名」原则决定是否收录
+          required: true

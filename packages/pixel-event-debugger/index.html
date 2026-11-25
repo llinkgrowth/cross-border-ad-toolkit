@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ad Pixel Event Bridge &amp; Offline Sandbox Debugger (Meta / TikTok / GA4)</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --panel: #111827;
+      --panel-alt: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --err: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: #090d16;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    header .badge {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 430px 1fr;
+      gap: 20px;
+      padding: 20px 24px;
+      max-width: 1480px;
+      margin: 0 auto;
+    }
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .field {
+      margin-bottom: 12px;
+    }
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .field input, .field select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+      color: var(--text);
+      font-size: 13px;
+    }
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .lp-mock {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #162033, #0f172a);
+      border: 1px dashed #475569;
+    }
+    .lp-mock h3 {
+      margin: 0 0 6px;
+      font-size: 16px;
+    }
+    .lp-mock p {
+      margin: 0 0 14px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .cta-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    button.cta-btn {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: opacity 0.15s;
+    }
+    button.cta-btn:hover { opacity: 0.92; }
+    .btn-contact { background: #0ea5e9; color: #082f49; }
+    .btn-lead { background: #10b981; color: #052e16; }
+    .btn-purchase { background: #f59e0b; color: #451a03; }
+    .btn-bug {
+      background: rgba(239, 68, 68, 0.16);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.45) !important;
+    }
+    .pill {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      background: rgba(0,0,0,0.25);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .inspector-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .clear-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .attrib-box {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+    }
+    .event-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .event-item {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .event-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .status-ok { color: var(--ok); font-weight: 700; font-size: 12px; }
+    .status-err { color: var(--err); font-weight: 700; font-size: 12px; }
+    pre {
+      margin: 6px 0;
+      padding: 10px;
+      background: #070b12;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 12px;
+      color: #e2e8f0;
+    }
+    .alert-list {
+      margin: 6px 0 0;
+      padding-left: 18px;
+      font-size: 12px;
+    }
+    .alert-err { color: #fca5a5; }
+    .alert-warn { color: #fcd34d; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ad Pixel Event Bridge &amp; Offline Sandbox Inspector</h1>
+    <span class="badge">Zero External Network Requests • Meta / TikTok / GA4</span>
+  </header>
+
+  <main class="layout">
+    <!-- Left Column: Mini Landing Page Simulator -->
+    <section class="card">
+      <h2>1. 模拟落地页与归因上下文 (Landing Page Sandbox)</h2>
+      <div class="field">
+        <label for="sim-url">模拟广告着陆 URL (含 fbclid / ttclid / gclid / utm_*)</label>
+        <input id="sim-url" type="text" value="https://offer.example.com/lp-us?fbclid=IwAR3x9kLmN0pQrStUvWxYz&ttclid=E.C.P.123456&utm_source=meta&utm_campaign=q4_scale" />
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="sim-slug">Page Slug</label>
+          <input id="sim-slug" type="text" value="lp-us-v1" />
+        </div>
+        <div class="field">
+          <label for="sim-seed">Visitor Seed (去重种子)</label>
+          <input id="sim-seed" type="text" value="sess_98a7b6" />
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="sim-value">订单金额 (Value)</label>
+          <input id="sim-value" type="text" value="49.90" />
+        </div>
+        <div class="field">
+          <label for="sim-currency">币种 (3位 ISO 码)</label>
+          <input id="sim-currency" type="text" value="USD" />
+        </div>
+      </div>
+
+      <div class="lp-mock">
+        <h3>Mini Offer Landing Page</h3>
+        <p>点击下方转化按钮，右侧实时拦截并校验 Meta / TikTok / GA4 三端标准 Payload 与确定性去重 <code>event_id</code>。</p>
+        <div class="cta-grid">
+          <button id="btn-contact" type="button" class="cta-btn btn-contact" data-pixel-action="contact">
+            <span>💬 咨询客服 (WhatsApp / Telegram)</span>
+            <span class="pill">action: contact</span>
+          </button>
+          <button id="btn-lead" type="button" class="cta-btn btn-lead" data-pixel-action="lead">
+            <span>📋 提交线索表单 (Submit Lead)</span>
+            <span class="pill">action: lead</span>
+          </button>
+          <button id="btn-purchase" type="button" class="cta-btn btn-purchase" data-pixel-action="purchase">
+            <span>🛒 立即下单购买 (Complete Order)</span>
+            <span class="pill">action: purchase</span>
+          </button>
+          <button id="btn-bug-demo" type="button" class="cta-btn btn-bug" data-pixel-action="bug_demo">
+            <span>⚠️ 触发「常见翻车告警」演示 (缺币种 + 拼写错误)</span>
+            <span class="pill">broken payload</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Real-Time Event & Deduplication Inspector -->
+    <section class="card">
+      <div class="inspector-bar">
+        <h2 style="margin:0;">2. 实时像素捕获与静态校验器 (Captured Pixel Calls)</h2>
+        <button id="btn-clear" type="button" class="clear-btn">清空记录 (Clear Log)</button>
+      </div>
+
+      <div id="attrib-view" class="attrib-box"></div>
+      <div id="event-log" class="event-list"></div>
+    </section>
+  </main>
+
+  <!-- Valid baseline PageView installation audited by cli.mjs lint -->
+  <script>
+    window.fbq = window.fbq || function () {};
+    window.ttq = window.ttq || { track: function () {} };
+    window.gtag = window.gtag || function () {};
+    fbq('track', 'PageView', { content_name: 'lp-us-v1' }, { eventID: 'evt_lp-us-v1_page-view_boot' });
+    ttq.track('ViewContent', { content_name: 'lp-us-v1', event_id: 'evt_lp-us-v1_page-view_boot' });
+    gtag('event', 'page_view', { page_title: 'Mini Offer Landing Page', event_id: 'evt_lp-us-v1_page-view_boot' });
+  </script>
+
+  <script>
+    (function () {
+      const EVENT_MAP = {
+        page_view: { meta: 'PageView', tiktok: 'ViewContent', ga4: 'page_view' },
+        lead: { meta: 'Lead', tiktok: 'SubmitForm', ga4: 'generate_lead' },
+        contact: { meta: 'Contact', tiktok: 'Contact', ga4: 'contact' },
+        add_to_cart: { meta: 'AddToCart', tiktok: 'AddToCart', ga4: 'add_to_cart' },
+        initiate_checkout: { meta: 'InitiateCheckout', tiktok: 'InitiateCheckout', ga4: 'begin_checkout' },
+        purchase: { meta: 'Purchase', tiktok: 'CompletePayment', ga4: 'purchase' }
+      };
+
+      const ISO_CURRENCIES = new Set(['USD', 'EUR', 'GBP', 'JPY', 'CNY', 'HKD', 'SGD', 'AUD', 'CAD', 'BRL', 'MXN', 'INR', 'THB', 'MYR', 'PHP', 'IDR', 'VND', 'KRW', 'AED']);
+
+      function fnv1a64Hex(str) {
+        let hash = 0xcbf29ce484222325n;
+        const prime = 0x100000001b3n;
+        const mask = 0xffffffffffffffffn;
+        for (let i = 0; i < str.length; i++) {
+          hash ^= BigInt(str.charCodeAt(i));
+          hash = (hash * prime) & mask;
+        }
+        return hash.toString(16).padStart(16, '0');
+      }
+
+      function generateEventId(pageSlug, action, visitorSeed, timestampMs) {
+        const slug = String(pageSlug || 'lp').trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-');
+        const act = String(action || 'event').trim().toLowerCase();
+        const bucket = Math.floor(Number(timestampMs) / 5000);
+        const digest = fnv1a64Hex(slug + '|' + act + '|' + visitorSeed + '|' + bucket);
+        return 'evt_' + slug + '_' + act + '_' + bucket + '_' + digest;
+      }
+
+      function captureClickIds(rawUrl, timestampMs) {
+        let params;
+        try {
+          params = new URL(rawUrl).searchParams;
+        } catch {
+          params = new URLSearchParams();
+        }
+        const fbclid = params.get('fbclid');
+        const ttclid = params.get('ttclid');
+        const gclid = params.get('gclid');
+        const fbc = fbclid ? 'fb.1.' + timestampMs + '.' + fbclid : null;
+        return {
+          fbclid,
+          ttclid,
+          gclid,
+          fbc,
+          utm_source: params.get('utm_source'),
+          utm_campaign: params.get('utm_campaign')
+        };
+      }
+
+      function validateBundle(action, valueRaw, currencyRaw, forceBug) {
+        const errors = [];
+        const warnings = [];
+        const numVal = valueRaw === '' ? undefined : Number(valueRaw);
+        const curr = String(currencyRaw || '').trim();
+
+        if (forceBug) {
+          errors.push('[EVENT_NAME_TYPO] Meta event name "init_checkout" is invalid. Did you mean "InitiateCheckout"?');
+          errors.push('[MISSING_CURRENCY] Purchase event is missing required 3-letter ISO "currency" parameter.');
+          errors.push('[META_EVENT_ID_MISPLACED] Meta event_id was placed inside 3rd params argument instead of 4th { eventID } options object.');
+          warnings.push('[DUPLICATE_PIXEL_SCRIPT] Detected 2 fbevents.js inclusions on page context.');
+          return { valid: false, errors, warnings };
+        }
+
+        if (action === 'purchase') {
+          if (valueRaw === '' || Number.isNaN(numVal)) {
+            errors.push('[MISSING_VALUE] Purchase requires a valid numeric "value".');
+          } else if (numVal < 0) {
+            errors.push('[NEGATIVE_VALUE] Parameter "value" cannot be negative.');
+          }
+          if (!curr) {
+            errors.push('[MISSING_CURRENCY] Purchase requires a 3-letter ISO "currency" code.');
+          }
+        }
+        if (curr && (!/^[A-Z]{3}$/.test(curr) || !ISO_CURRENCIES.has(curr))) {
+          errors.push('[INVALID_CURRENCY_CODE] Currency "' + curr + '" is not a valid uppercase 3-letter ISO-4217 code (e.g. USD).');
+        }
+        return { valid: errors.length === 0, errors, warnings };
+      }
+
+      const urlInput = document.getElementById('sim-url');
+      const slugInput = document.getElementById('sim-slug');
+      const seedInput = document.getElementById('sim-seed');
+      const valueInput = document.getElementById('sim-value');
+      const currencyInput = document.getElementById('sim-currency');
+      const attribView = document.getElementById('attrib-view');
+      const eventLog = document.getElementById('event-log');
+
+      function renderAttribution() {
+        const now = Date.now();
+        const info = captureClickIds(urlInput.value, now);
+        attribView.textContent =
+          'Click Attribution Snapshot => fbclid: ' + (info.fbclid || 'none') +
+          ' | _fbc: ' + (info.fbc || 'none') +
+          ' | ttclid: ' + (info.ttclid || 'none') +
+          ' | utm_source: ' + (info.utm_source || 'none');
+      }
+
+      function recordTrigger(action, forceBug) {
+        const now = Date.now();
+        renderAttribution();
+        const eventId = generateEventId(slugInput.value, action, seedInput.value, now);
+        const valRaw = valueInput.value.trim();
+        const currRaw = currencyInput.value.trim();
+        const numVal = valRaw !== '' && !Number.isNaN(Number(valRaw)) ? Number(valRaw) : undefined;
+
+        const map = EVENT_MAP[action] || { meta: 'Custom', tiktok: 'Custom', ga4: 'custom_event' };
+        const check = validateBundle(action, valRaw, currRaw, forceBug);
+
+        let calls;
+        if (forceBug) {
+          const fnFbq = "fbq('track'";
+          const fnTtq = "ttq.track";
+          const fnGtag = "gtag('event'";
+          calls = [
+            `${fnFbq}, 'init_checkout', { value: "${valRaw}", event_id: "${eventId}" }); // <-- TYPO + MISSING CURRENCY + MISPLACED EVENT_ID`,
+            `${fnTtq}('purchase', { value: "${valRaw}" }); // <-- WRONG CASE (expected CompletePayment)`,
+            `${fnGtag}, 'Purchase', { value: "${valRaw}" }); // <-- MISSING transaction_id & currency`
+          ].join('\n');
+        } else {
+          const baseParams = {};
+          if (numVal !== undefined && (action === 'purchase' || action === 'lead')) baseParams.value = numVal;
+          if (currRaw && (action === 'purchase' || action === 'lead')) baseParams.currency = currRaw;
+
+          const fnFbq = "fbq('track'";
+          const fnTtq = "ttq.track";
+          const fnGtag = "gtag('event'";
+          const metaCall = `${fnFbq}, '${map.meta}', ${JSON.stringify(baseParams)}, ${JSON.stringify({ eventID: eventId })});`;
+          const ttCall = `${fnTtq}('${map.tiktok}', ${JSON.stringify({ ...baseParams, event_id: eventId })});`;
+          const gaCall = `${fnGtag}, '${map.ga4}', ${JSON.stringify({ ...(action === 'purchase' ? { transaction_id: 'ord_' + eventId.slice(-8) } : {}), ...baseParams, event_id: eventId })});`;
+          calls = [metaCall, ttCall, gaCall].join('\n');
+        }
+
+        const item = document.createElement('div');
+        item.className = 'event-item';
+        const alertsHtml = [
+          ...check.errors.map((e) => `<li class="alert-err">${e}</li>`),
+          ...check.warnings.map((w) => `<li class="alert-warn">${w}</li>`)
+        ].join('');
+
+        item.innerHTML = `
+          <div class="event-head">
+            <strong>Action: <code>${action}</code> | Deduplication ID: <code>${eventId}</code></strong>
+            <span class="${check.valid ? 'status-ok' : 'status-err'}">${check.valid ? '✔ VALID PAYLOAD' : '✖ VALIDATION FAILED'}</span>
+          </div>
+          <pre>${calls}</pre>
+          ${alertsHtml ? `<ul class="alert-list">${alertsHtml}</ul>` : ''}
+        `;
+        eventLog.prepend(item);
+      }
+
+      document.getElementById('btn-contact').addEventListener('click', () => recordTrigger('contact', false));
+      document.getElementById('btn-lead').addEventListener('click', () => recordTrigger('lead', false));
+      document.getElementById('btn-purchase').addEventListener('click', () => recordTrigger('purchase', false));
+      document.getElementById('btn-bug-demo').addEventListener('click', () => recordTrigger('initiate_checkout', true));
+      document.getElementById('btn-clear').addEventListener('click', () => { eventLog.innerHTML = ''; });
+      urlInput.addEventListener('input', renderAttribution);
+
+      // Fire initial page_view on sandbox load
+      renderAttribution();
+      recordTrigger('page_view', false);
+    })();
+  </script>
+</body>
+</html>

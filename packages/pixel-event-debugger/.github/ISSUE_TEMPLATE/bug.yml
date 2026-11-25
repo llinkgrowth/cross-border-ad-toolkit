@@ -1,0 +1,36 @@
+name: Bug Report
+description: Report a bug in event mapping, deduplication ID generation, or HTML static linting
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting an issue! Please provide a minimal reproduction snippet or pixel payload below.
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Target Ad Platform
+      options:
+        - Meta Pixel (fbq)
+        - TikTok Pixel (ttq)
+        - Google Analytics 4 (gtag)
+        - CLI / HTML Linter
+        - Offline Sandbox (index.html)
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction Payload / HTML Snippet
+      description: Paste the `fbq` / `ttq` / `gtag` call or CLI command that triggered the issue.
+      placeholder: |
+        node cli.mjs map --action purchase --value 49.9 --currency USD
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs. Actual Behavior
+    validations:
+      required: true

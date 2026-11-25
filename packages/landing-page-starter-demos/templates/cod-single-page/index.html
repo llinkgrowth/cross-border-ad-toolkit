@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{t.cod.meta.title}}</title>
+<meta name="description" content="{{t.cod.meta.description}}">
+<style>
+  :root {
+    --bg: #f5f1ea;
+    --surface: #fffdf9;
+    --ink: #211d16;
+    --ink-soft: #5c5548;
+    --ink-faint: #8a8275;
+    --line: #e4dccf;
+    --accent: #b5451d;
+    --accent-dark: #8f3415;
+    --accent-soft: #f7e5db;
+    --ok: #2f6b4f;
+    --radius: 18px;
+    --radius-sm: 10px;
+    --shadow: 0 1px 2px rgba(33, 29, 22, .05), 0 18px 40px rgba(33, 29, 22, .08);
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Naskh Arabic", "Noto Sans Arabic", "Microsoft YaHei", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0 16px 64px;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.65 var(--font);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .page { max-width: 960px; margin: 0 auto; }
+
+  /* ---------- language switcher (injected by the builder) ---------- */
+  .i18n-switcher {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+  }
+  .i18n-switcher__label {
+    font-size: 12px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-inline-end: 4px;
+  }
+  .i18n-switcher__link {
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-size: 12px;
+    text-decoration: none;
+  }
+  .i18n-switcher__link:hover { border-color: var(--accent); color: var(--accent); }
+  .i18n-switcher__link[aria-current="true"] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent-dark);
+    font-weight: 600;
+  }
+
+  /* ---------- header ---------- */
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-block: 18px;
+  }
+  .demo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border: 1px dashed var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink-faint);
+    font-size: 12px;
+  }
+  .demo-badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+    gap: 28px;
+    align-items: center;
+    padding: 28px 0 20px;
+  }
+  .eyebrow {
+    display: inline-block;
+    margin-block-end: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  h1 {
+    margin: 0 0 12px;
+    font-size: clamp(28px, 5vw, 44px);
+    line-height: 1.15;
+    letter-spacing: -.02em;
+  }
+  .hero p {
+    margin: 0 0 20px;
+    max-width: 46ch;
+    color: var(--ink-soft);
+    font-size: 16px;
+  }
+  .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+  .hero-actions .note { color: var(--ink-faint); font-size: 13px; }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    padding: 10px 22px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 650;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .15s ease, transform .15s ease;
+  }
+  .button:hover { background: var(--accent-dark); }
+  .button:active { transform: translateY(1px); }
+  .button.ghost {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+  }
+  .button.ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hero-visual {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius);
+    background:
+      radial-gradient(circle at 30% 22%, #fff 0 8%, transparent 9%),
+      linear-gradient(145deg, #e8d9c6 0%, #d9be9f 45%, #c99d74 100%);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .hero-visual::before {
+    content: "";
+    position: absolute;
+    inset-inline: 18%;
+    inset-block-start: 28%;
+    aspect-ratio: 1;
+    border-radius: 32% 68% 55% 45% / 45% 40% 60% 55%;
+    background: linear-gradient(160deg, #f6ede1, #cfa87f);
+    box-shadow: 0 30px 50px rgba(90, 60, 30, .25);
+  }
+  .hero-visual::after {
+    content: "";
+    position: absolute;
+    inset-inline: 30%;
+    inset-block-start: 42%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 10px solid rgba(255, 253, 249, .55);
+  }
+  .hero-visual .mock-tag {
+    position: absolute;
+    inset-block-end: 14px;
+    inset-inline-start: 14px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(255, 253, 249, .85);
+    color: var(--ink-soft);
+    font-size: 11px;
+    letter-spacing: .04em;
+  }
+
+  /* ---------- trust row ---------- */
+  .trust-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-block: 8px 26px;
+  }
+  .trust {
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+  }
+  .trust strong { display: block; margin-block-end: 4px; font-size: 14px; }
+  .trust span { color: var(--ink-faint); font-size: 13px; line-height: 1.55; }
+
+  /* ---------- urgency ---------- */
+  .urgency {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 18px;
+    padding: 14px 18px;
+    border-radius: var(--radius-sm);
+    background: var(--ink);
+    color: #fbf6ee;
+    font-size: 14px;
+  }
+  .urgency .clock { font-variant-numeric: tabular-nums; letter-spacing: .08em; font-weight: 700; }
+  .urgency .stock { color: #f0c9a8; }
+  .urgency .stock strong { color: #fff; font-size: 17px; }
+
+  /* ---------- sections ---------- */
+  section { margin-block-start: 34px; }
+  h2 { margin: 0 0 6px; font-size: clamp(20px, 3vw, 26px); letter-spacing: -.01em; }
+  .section-lead { margin: 0 0 18px; color: var(--ink-soft); font-size: 14px; }
+
+  /* ---------- spec picker ---------- */
+  .spec-card {
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  fieldset { margin: 0 0 20px; padding: 0; border: 0; }
+  fieldset:last-child { margin-block-end: 0; }
+  legend { margin-block-end: 10px; padding: 0; font-size: 13px; font-weight: 650; color: var(--ink-soft); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { position: relative; display: inline-flex; }
+  .chip input { position: absolute; inline-size: 1px; block-size: 1px; opacity: 0; }
+  .chip span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s, color .15s;
+  }
+  .chip span::before {
+    content: "";
+    inline-size: 12px;
+    block-size: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    background: var(--swatch, transparent);
+  }
+  .chip input:checked + span {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    font-weight: 600;
+  }
+  .chip input:checked + span::before { border-color: var(--accent); }
+  .chip input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .swatch-sand span { --swatch: #d9be9f; }
+  .swatch-slate span { --swatch: #6b7076; }
+  .swatch-olive span { --swatch: #7b7a4f; }
+
+  .qty-row { display: flex; align-items: center; gap: 10px; }
+  .qty-row select {
+    min-height: 42px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 14px;
+  }
+
+  /* ---------- form ---------- */
+  .form-card {
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 16px;
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-size: 13px; font-weight: 650; color: var(--ink-soft); }
+  .field input {
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 14px;
+  }
+  .field input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(181, 69, 29, .12);
+  }
+  .field input[aria-invalid="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-block-start: 18px;
+  }
+  .form-actions .privacy { max-width: 46ch; margin: 0; color: var(--ink-faint); font-size: 12px; }
+  .form-error {
+    margin: 14px 0 0;
+    padding: 10px 12px;
+    border-inline-start: 3px solid var(--accent);
+    border-radius: 6px;
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    font-size: 13px;
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq { display: grid; gap: 10px; }
+  details {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    padding: 0 16px;
+  }
+  details[open] { border-color: #d5c6b2; }
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    font-size: 14px;
+    font-weight: 650;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--accent); font-size: 18px; line-height: 1; }
+  details[open] summary::after { content: "−"; }
+  details p { margin: 0 0 14px; color: var(--ink-soft); font-size: 14px; }
+
+  /* ---------- footer ---------- */
+  footer {
+    margin-block-start: 36px;
+    padding-block-start: 18px;
+    border-block-start: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  footer p { margin: 0; }
+
+  /* ---------- order preview dialog ---------- */
+  dialog {
+    width: min(520px, calc(100vw - 32px));
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 30px 80px rgba(20, 15, 10, .35);
+  }
+  dialog::backdrop { background: rgba(24, 20, 14, .45); }
+  .dialog-body { padding: 24px; }
+  .dialog-body h3 { margin: 0 0 6px; font-size: 20px; }
+  .dialog-body .intro { margin: 0 0 16px; color: var(--ink-soft); font-size: 13px; }
+  .summary { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; margin: 0; }
+  .summary dt { color: var(--ink-faint); font-size: 13px; }
+  .summary dd { margin: 0; font-size: 14px; overflow-wrap: anywhere; }
+  .dialog-actions { display: flex; justify-content: flex-end; margin-block-start: 20px; }
+
+  /* ---------- responsive / RTL / reduced motion ---------- */
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-visual { max-width: 380px; }
+    .trust-row { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="site-header">
+    <span class="demo-badge">{{t.common.demo.badge}}</span>
+    <!-- I18N:SWITCHER -->
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <span class="eyebrow">{{t.cod.hero.badge}}</span>
+        <h1>{{t.cod.hero.title}}</h1>
+        <p>{{t.cod.hero.subtitle}}</p>
+        <div class="hero-actions">
+          <a class="button" href="#order">{{t.cod.hero.cta}}</a>
+          <span class="note">{{t.cod.hero.note}}</span>
+        </div>
+        <p class="note">{{n.orders}} {{t.cod.hero.socialProof}}</p>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <span class="mock-tag">{{t.cod.hero.visualTag}}</span>
+      </div>
+    </section>
+
+    <div class="trust-row">
+      <div class="trust">
+        <strong>{{t.cod.trust.delivery.title}}</strong>
+        <span>{{t.cod.trust.delivery.body}}</span>
+      </div>
+      <div class="trust">
+        <strong>{{t.cod.trust.cod.title}}</strong>
+        <span>{{t.cod.trust.cod.body}}</span>
+      </div>
+      <div class="trust">
+        <strong>{{t.cod.trust.returns.title}}</strong>
+        <span>{{t.cod.trust.returns.body}}</span>
+      </div>
+    </div>
+
+    <div class="urgency">
+      <span>{{t.cod.urgency.ends}} <span class="clock" id="countdown">--:--:--</span></span>
+      <span class="stock">{{t.cod.urgency.stockLabel}} <strong>{{n.stock}}</strong> {{t.cod.urgency.stockUnit}}</span>
+    </div>
+
+    <section id="spec">
+      <h2>{{t.cod.spec.title}}</h2>
+      <p class="section-lead">{{t.cod.spec.subtitle}}</p>
+      <div class="spec-card">
+        <fieldset>
+          <legend>{{t.cod.spec.color.label}}</legend>
+          <div class="chips">
+            <label class="chip swatch-sand">
+              <input type="radio" name="color" value="sand" checked>
+              <span>{{t.cod.spec.color.sand}}</span>
+            </label>
+            <label class="chip swatch-slate">
+              <input type="radio" name="color" value="slate">
+              <span>{{t.cod.spec.color.slate}}</span>
+            </label>
+            <label class="chip swatch-olive">
+              <input type="radio" name="color" value="olive">
+              <span>{{t.cod.spec.color.olive}}</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>{{t.cod.spec.size.label}}</legend>
+          <div class="chips">
+            <label class="chip">
+              <input type="radio" name="size" value="small">
+              <span>{{t.cod.spec.size.small}}</span>
+            </label>
+            <label class="chip">
+              <input type="radio" name="size" value="medium" checked>
+              <span>{{t.cod.spec.size.medium}}</span>
+            </label>
+            <label class="chip">
+              <input type="radio" name="size" value="large">
+              <span>{{t.cod.spec.size.large}}</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>{{t.cod.spec.qty.label}}</legend>
+          <div class="qty-row">
+            <select id="quantity" aria-label="{{t.cod.spec.qty.label}}">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </div>
+        </fieldset>
+      </div>
+    </section>
+
+    <section id="order">
+      <h2>{{t.cod.form.title}}</h2>
+      <p class="section-lead">{{t.cod.form.subtitle}}</p>
+      <div class="form-card">
+        <form id="cod-form" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="full-name">{{t.cod.form.name.label}}</label>
+              <input id="full-name" name="name" type="text" autocomplete="name"
+                     placeholder="{{t.cod.form.name.placeholder}}" required>
+            </div>
+            <div class="field">
+              <label for="phone">{{t.cod.form.phone.label}}</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"
+                     placeholder="{{t.cod.form.phone.placeholder}}" required>
+            </div>
+            <div class="field full">
+              <label for="address">{{t.cod.form.address.label}}</label>
+              <input id="address" name="address" type="text" autocomplete="street-address"
+                     placeholder="{{t.cod.form.address.placeholder}}" required>
+            </div>
+            <div class="field">
+              <label for="city">{{t.cod.form.city.label}}</label>
+              <input id="city" name="city" type="text" autocomplete="address-level2"
+                     placeholder="{{t.cod.form.city.placeholder}}" required>
+            </div>
+            <div class="field">
+              <label for="note">{{t.cod.form.note.label}}</label>
+              <input id="note" name="note" type="text"
+                     placeholder="{{t.cod.form.note.placeholder}}">
+            </div>
+          </div>
+          <p class="form-error" id="form-error" role="alert" hidden>{{t.cod.form.error}}</p>
+          <div class="form-actions">
+            <p class="privacy">{{t.cod.form.privacy}}</p>
+            <button class="button" type="submit">{{t.cod.form.submit}}</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section>
+      <h2>{{t.cod.faq.title}}</h2>
+      <div class="faq">
+        <details>
+          <summary>{{t.cod.faq.q1}}</summary>
+          <p>{{t.cod.faq.a1}}</p>
+        </details>
+        <details>
+          <summary>{{t.cod.faq.q2}}</summary>
+          <p>{{t.cod.faq.a2}}</p>
+        </details>
+        <details>
+          <summary>{{t.cod.faq.q3}}</summary>
+          <p>{{t.cod.faq.a3}}</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>{{t.common.demo.note}}</p>
+    <p>{{t.common.footer.note}}</p>
+  </footer>
+</div>
+
+<dialog id="order-dialog" aria-labelledby="order-dialog-title">
+  <div class="dialog-body">
+    <h3 id="order-dialog-title">{{t.cod.success.title}}</h3>
+    <p class="intro">{{t.cod.success.intro}}</p>
+    <dl class="summary">
+      <dt>{{t.cod.success.name}}</dt><dd id="preview-name"></dd>
+      <dt>{{t.cod.success.phone}}</dt><dd id="preview-phone"></dd>
+      <dt>{{t.cod.success.address}}</dt><dd id="preview-address"></dd>
+      <dt>{{t.cod.success.city}}</dt><dd id="preview-city"></dd>
+      <dt>{{t.cod.success.variant}}</dt><dd id="preview-variant"></dd>
+      <dt>{{t.cod.success.quantity}}</dt><dd id="preview-quantity"></dd>
+      <dt>{{t.cod.success.note}}</dt><dd id="preview-note"></dd>
+    </dl>
+    <div class="dialog-actions">
+      <button class="button ghost" type="button" id="close-dialog">{{t.cod.success.close}}</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function () {
+  'use strict';
+
+  var MS_PER_SECOND = 1000;
+  var SECONDS_PER_MINUTE = 60;
+  var MINUTES_PER_HOUR = 60;
+  var HOURS_PER_DAY = 24;
+  var PAD_WIDTH = 2;
+
+  var countdown = document.getElementById('countdown');
+  var form = document.getElementById('cod-form');
+  var error = document.getElementById('form-error');
+  var dialog = document.getElementById('order-dialog');
+  var closeButton = document.getElementById('close-dialog');
+
+  function pad(value) {
+    return String(value).padStart(PAD_WIDTH, '0');
+  }
+
+  /* 演示用倒计时：每天本地时间午夜重置，不向任何服务器取时间。 */
+  function renderCountdown() {
+    var now = new Date();
+    var midnight = new Date(now);
+    midnight.setHours(HOURS_PER_DAY, 0, 0, 0);
+    var remaining = Math.max(0, Math.floor((midnight - now) / MS_PER_SECOND));
+    var hours = Math.floor(remaining / (SECONDS_PER_MINUTE * MINUTES_PER_HOUR));
+    var minutes = Math.floor(remaining / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
+    var seconds = remaining % SECONDS_PER_MINUTE;
+    countdown.textContent = pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+  }
+
+  function checkedValue(name, fallback) {
+    var input = form.querySelector('input[name="' + name + '"]:checked');
+    return input ? input.value : fallback;
+  }
+
+  function variantLabel() {
+    var colorInput = form.querySelector('input[name="color"]:checked');
+    var sizeInput = form.querySelector('input[name="size"]:checked');
+    var color = colorInput ? colorInput.parentElement.querySelector('span').textContent.trim() : '';
+    var size = sizeInput ? sizeInput.parentElement.querySelector('span').textContent.trim() : '';
+    return color + ' / ' + size;
+  }
+
+  function readForm() {
+    return {
+      name: form.elements.name.value.trim(),
+      phone: form.elements.phone.value.trim(),
+      address: form.elements.address.value.trim(),
+      city: form.elements.city.value.trim(),
+      note: form.elements.note.value.trim(),
+      variant: variantLabel(),
+      quantity: document.getElementById('quantity').value
+    };
+  }
+
+  function clearInvalid() {
+    Array.prototype.forEach.call(form.querySelectorAll('[aria-invalid]'), function (input) {
+      input.removeAttribute('aria-invalid');
+    });
+  }
+
+  function validate(data) {
+    clearInvalid();
+    var invalid = [];
+    ['name', 'phone', 'address', 'city'].forEach(function (key) {
+      if (!data[key]) invalid.push(form.elements[key]);
+    });
+    invalid.forEach(function (input) {
+      input.setAttribute('aria-invalid', 'true');
+    });
+    if (invalid.length > 0) {
+      error.hidden = false;
+      invalid[0].focus();
+      return false;
+    }
+    error.hidden = true;
+    return true;
+  }
+
+  function fillPreview(data) {
+    document.getElementById('preview-name').textContent = data.name;
+    document.getElementById('preview-phone').textContent = data.phone;
+    document.getElementById('preview-address').textContent = data.address;
+    document.getElementById('preview-city').textContent = data.city;
+    document.getElementById('preview-variant').textContent = data.variant;
+    document.getElementById('preview-quantity').textContent = data.quantity;
+    document.getElementById('preview-note').textContent = data.note || '—';
+  }
+
+  function openDialog() {
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.setAttribute('open', '');
+  }
+
+  function closeDialog() {
+    if (typeof dialog.close === 'function') dialog.close();
+    else dialog.removeAttribute('open');
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var data = readForm();
+    if (!validate(data)) return;
+    fillPreview(data);
+    openDialog();
+  });
+
+  form.addEventListener('input', function () {
+    error.hidden = true;
+  });
+
+  closeButton.addEventListener('click', closeDialog);
+  dialog.addEventListener('click', function (event) {
+    if (event.target === dialog) closeDialog();
+  });
+
+  renderCountdown();
+  setInterval(renderCountdown, MS_PER_SECOND);
+})();
+</script>
+</body>
+</html>

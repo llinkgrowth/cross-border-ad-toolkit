@@ -1,0 +1,270 @@
+{
+  "_meta": {
+    "locale": "en",
+    "label": "English",
+    "direction": "ltr",
+    "currency": {
+      "code": "USD",
+      "symbol": "$",
+      "position": "before"
+    },
+    "numberFormat": {
+      "decimal": ".",
+      "thousands": ",",
+      "digits": "latn"
+    }
+  },
+  "numbers": {
+    "orders": 12000,
+    "rating": 4.8,
+    "stock": 37,
+    "replyMinutes": 10,
+    "installs": 50000
+  },
+  "messages": {
+    "common": {
+      "language": "Language",
+      "demo": {
+        "badge": "Starter demo",
+        "note": "Demo skeleton only — replace the copy and connect your own API before production."
+      },
+      "footer": {
+        "note": "No external requests. No tracking. Data stays in your browser."
+      }
+    },
+    "cod": {
+      "meta": {
+        "title": "COD single-page starter — cash on delivery landing demo",
+        "description": "A zero-dependency COD landing page skeleton: hero, variant picker, delivery form and a local order preview."
+      },
+      "hero": {
+        "badge": "Pay on delivery",
+        "title": "Try it first, pay when it arrives.",
+        "subtitle": "A clean single-product skeleton for cash-on-delivery campaigns in Southeast Asia and the Middle East.",
+        "cta": "Choose your option",
+        "note": "Free delivery on every order",
+        "socialProof": "orders delivered",
+        "visualTag": "Product visual placeholder"
+      },
+      "trust": {
+        "delivery": {
+          "title": "2–4 day delivery",
+          "body": "Nationwide courier coverage with tracking updates."
+        },
+        "cod": {
+          "title": "Pay the courier",
+          "body": "No card needed. Check the product, then pay at your door."
+        },
+        "returns": {
+          "title": "Easy returns",
+          "body": "Unopened items can be returned within 30 days."
+        }
+      },
+      "urgency": {
+        "ends": "Offer ends in",
+        "stockLabel": "Only",
+        "stockUnit": "left in stock today"
+      },
+      "spec": {
+        "title": "Choose your variant",
+        "subtitle": "The demo carries your selection into the order preview.",
+        "color": {
+          "label": "Color",
+          "sand": "Sand",
+          "slate": "Slate",
+          "olive": "Olive"
+        },
+        "size": {
+          "label": "Size",
+          "small": "Small",
+          "medium": "Medium",
+          "large": "Large"
+        },
+        "qty": {
+          "label": "Quantity"
+        }
+      },
+      "form": {
+        "title": "Delivery address",
+        "subtitle": "Cash on delivery. The courier will call before arrival.",
+        "name": {
+          "label": "Full name",
+          "placeholder": "e.g. Aisyah Rahman"
+        },
+        "phone": {
+          "label": "Phone number",
+          "placeholder": "Include the country code"
+        },
+        "address": {
+          "label": "Street address",
+          "placeholder": "House number, street, district"
+        },
+        "city": {
+          "label": "City",
+          "placeholder": "City or province"
+        },
+        "note": {
+          "label": "Delivery note (optional)",
+          "placeholder": "Landmark, preferred time, etc."
+        },
+        "submit": "Place COD order",
+        "privacy": "Used only to prepare this local preview. Nothing is sent anywhere.",
+        "error": "Please fill in your name, phone number and address."
+      },
+      "success": {
+        "title": "Order preview",
+        "intro": "This preview is generated in your browser. Connect your own order endpoint for production.",
+        "close": "Close preview",
+        "name": "Name",
+        "phone": "Phone",
+        "address": "Address",
+        "city": "City",
+        "variant": "Variant",
+        "quantity": "Quantity",
+        "note": "Note",
+        "none": "—"
+      },
+      "faq": {
+        "title": "COD questions",
+        "q1": "Do I pay anything upfront?",
+        "a1": "No. The demo only collects a delivery address, and payment happens when the courier arrives.",
+        "q2": "Can I change the address after ordering?",
+        "a2": "In production, ask the courier to update it before dispatch. This demo does not store the address.",
+        "q3": "What do I need to prepare?",
+        "a3": "A reachable phone number and a complete street address are enough."
+      }
+    },
+    "whatsapp": {
+      "meta": {
+        "title": "WhatsApp lead page starter — chat-first landing demo",
+        "description": "A zero-dependency WhatsApp lead page skeleton with comparison cards, FAQ, a sticky CTA and UTM-aware chat preview."
+      },
+      "hero": {
+        "badge": "Talk to a human",
+        "title": "Questions before you order?",
+        "subtitle": "Skip the form. Ask a real person, get an answer, then decide.",
+        "cta": "Chat on WhatsApp",
+        "note": "Demo number only — replace it with your business number.",
+        "replyPrefix": "Replies usually within",
+        "replyUnit": "minutes"
+      },
+      "mock": {
+        "name": "Support team",
+        "status": "online now",
+        "bubble1": "Hi! Ask us anything about the product.",
+        "bubble2": "We usually reply within a few minutes."
+      },
+      "pain": {
+        "title": "Two ways to get an answer",
+        "lead": "A form only lets people leave; a conversation lets them ask.",
+        "left": {
+          "title": "Self-serve only",
+          "item1": "Long FAQ pages you have to scan",
+          "item2": "Forms that go quiet after submit",
+          "item3": "No way to ask a follow-up"
+        },
+        "right": {
+          "title": "Chat first",
+          "item1": "One tap opens a real conversation",
+          "item2": "Answers in your customer's own words",
+          "item3": "The page context arrives with the message"
+        }
+      },
+      "preview": {
+        "title": "Message preview",
+        "label": "Prefilled message",
+        "note": "The link keeps the current UTM parameters, so you can see which ad started the chat.",
+        "open": "Open chat",
+        "invalid": "This demo number is not a real WhatsApp account."
+      },
+      "faq": {
+        "title": "Before you chat",
+        "q1": "Is this a real WhatsApp number?",
+        "a1": "No. The starter uses a demo number and never contacts it automatically.",
+        "q2": "Does the message include ad parameters?",
+        "a2": "Yes. The preview shows how UTM parameters are carried into the message.",
+        "q3": "Can I use my own number?",
+        "a3": "Replace the data-wa-phone attribute in the template with your business number.",
+        "cta": "Still have questions?"
+      },
+      "sticky": {
+        "cta": "Chat on WhatsApp"
+      },
+      "message": {
+        "prefill": "Hi! I'm interested in the starter demo and have a question.",
+        "context": "Page context"
+      },
+      "phone": {
+        "label": "Business number (demo)"
+      },
+      "footer": {
+        "note": "The floating button stays reachable while the reader scrolls."
+      }
+    },
+    "pwa": {
+      "meta": {
+        "title": "PWA app landing starter — installable page demo",
+        "description": "A zero-dependency install landing skeleton with manifest, service worker and a beforeinstallprompt demo."
+      },
+      "hero": {
+        "badge": "Installable web app",
+        "title": "Add it to your home screen.",
+        "subtitle": "A lightweight install landing page skeleton with a manifest, a service worker and a one-tap install demo.",
+        "cta": "Install app",
+        "note": "Works offline after the first visit.",
+        "socialProof": "installs so far"
+      },
+      "shots": {
+        "title": "A quick look",
+        "one": "Home screen preview",
+        "two": "Feature list preview",
+        "three": "Offline state preview"
+      },
+      "features": {
+        "title": "Built for installs",
+        "speed": {
+          "title": "Loads fast",
+          "body": "One HTML file, no frameworks, no external requests."
+        },
+        "offline": {
+          "title": "Works offline",
+          "body": "The service worker caches the shell after the first visit."
+        },
+        "install": {
+          "title": "Installs like an app",
+          "body": "The install prompt is intercepted and replayed from a button."
+        }
+      },
+      "install": {
+        "title": "One-tap install",
+        "step1": "Open this page in a browser that supports install prompts.",
+        "step2": "Tap the install button below; the demo replays the saved prompt.",
+        "step3": "Launch it from the home screen and reload while offline.",
+        "button": "Add to home screen",
+        "unsupported": "This browser does not expose an install prompt. Use the browser menu instead.",
+        "ready": "Install prompt captured. The button below is live.",
+        "waiting": "Waiting for the browser install prompt…",
+        "installed": "Installed. You can open it from the home screen.",
+        "dismissed": "Install was dismissed. You can try again from the browser menu."
+      },
+      "offline": {
+        "title": "Offline ready",
+        "body": "After the first visit, the service worker serves this shell from the cache.",
+        "status": "Cache status",
+        "online": "Online",
+        "offline": "Offline",
+        "unavailable": "Service worker needs http(s); this page is running as a local file."
+      },
+      "faq": {
+        "title": "PWA questions",
+        "q1": "Why is the install button sometimes disabled?",
+        "a1": "Browsers only expose the install prompt after their own eligibility checks. The demo explains the fallback.",
+        "q2": "Does this demo need a build step?",
+        "a2": "No. The manifest and service worker are plain files next to index.html."
+      },
+      "footer": {
+        "note": "Icons and manifest are local files; nothing leaves your browser."
+      }
+    }
+  }
+}

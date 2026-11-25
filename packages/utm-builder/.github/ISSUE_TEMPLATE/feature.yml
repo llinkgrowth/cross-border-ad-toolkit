@@ -1,0 +1,28 @@
+name: Feature request / 功能建议
+description: 新的渠道预设、参数、CLI 选项等
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你想解决什么问题
+      description: 先说场景，再说功能；不要只写「加一个 X」
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 你建议怎么做
+      description: 如果能接受「保持单文件、零依赖、无追踪」这几个前提，再提
+    validations:
+      required: false
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: 前提确认
+      options:
+        - label: 我理解这个项目要保持单文件、零第三方依赖
+          required: true
+        - label: 我理解不接受任何统计/追踪脚本
+          required: true

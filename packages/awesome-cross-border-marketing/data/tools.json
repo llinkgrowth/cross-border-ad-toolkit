@@ -1,0 +1,478 @@
+{
+  "version": "1.0.0",
+  "updatedAt": "2026-11-25",
+  "categories": [
+    {
+      "id": "landing-page-builders",
+      "titleZh": "落地页与建站",
+      "titleEn": "Landing page builders",
+      "items": [
+        {
+          "name": "Unbounce",
+          "url": "https://unbounce.com/",
+          "description": "Drag-and-drop landing page builder with A/B testing and conversion tools. One of the established names."
+        },
+        {
+          "name": "Instapage",
+          "url": "https://instapage.com/",
+          "description": "Landing page platform focused on personalization and ad-to-page matching."
+        },
+        {
+          "name": "Leadpages",
+          "url": "https://leadpages.com/",
+          "description": "Simple landing pages and lead capture for small teams."
+        },
+        {
+          "name": "Carrd",
+          "url": "https://carrd.co/",
+          "description": "Lightweight one-page sites; good for quick tests and simple offers."
+        },
+        {
+          "name": "Webflow",
+          "url": "https://webflow.com/",
+          "description": "Visual web design with full HTML/CSS control. Steeper learning curve, higher ceiling."
+        },
+        {
+          "name": "Framer",
+          "url": "https://www.framer.com/",
+          "description": "Design-first site builder with strong motion and responsive controls."
+        },
+        {
+          "name": "Dorik",
+          "url": "https://dorik.com/",
+          "description": "No-code website and landing page builder with a template library."
+        },
+        {
+          "name": "Swipe Pages",
+          "url": "https://swipepages.com/",
+          "description": "Fast mobile-first landing pages built for paid traffic.",
+          "tags": [
+            "paid"
+          ]
+        },
+        {
+          "name": "Elementor",
+          "url": "https://elementor.com/",
+          "description": "WordPress page builder; pairs with any WP host."
+        },
+        {
+          "name": "Google Sites",
+          "url": "https://sites.google.com/",
+          "description": "Free, minimal; fine for internal or throwaway pages, not for conversion."
+        },
+        {
+          "name": "爱普落地页 / IpCloak Builder",
+          "url": "https://builder.ipcloak.ai/",
+          "description": "No-code landing pages for cross-border ads: templates, visual editing, 69 languages, pixels, COD, PWA.",
+          "maintainedByUs": true
+        },
+        {
+          "name": "WordPress",
+          "url": "https://wordpress.org/",
+          "description": "Self-hosted CMS; the base layer for many landing page stacks.",
+          "tags": [
+            "open-source"
+          ]
+        },
+        {
+          "name": "Shopify",
+          "url": "https://www.shopify.com/",
+          "description": "Storefront platform; use it when the offer is a full catalog, not a single page."
+        }
+      ]
+    },
+    {
+      "id": "templates-design-references",
+      "titleZh": "模板与设计参考",
+      "titleEn": "Templates & design references",
+      "items": [
+        {
+          "name": "ThemeForest",
+          "url": "https://themeforest.net/",
+          "description": "Large marketplace of website and landing page themes."
+        },
+        {
+          "name": "Envato Elements",
+          "url": "https://elements.envato.com/",
+          "description": "Subscription library of templates, fonts, and stock assets."
+        },
+        {
+          "name": "Creative Market",
+          "url": "https://creativemarket.com/",
+          "description": "Fonts, graphics, and template bundles from independent designers."
+        },
+        {
+          "name": "Landingfolio",
+          "url": "https://www.landingfolio.com/",
+          "description": "Curated landing page examples and section inspiration."
+        },
+        {
+          "name": "SaaS Landing Page",
+          "url": "https://saaslandingpage.com/",
+          "description": "Gallery of SaaS landing pages, filterable by industry and style."
+        },
+        {
+          "name": "PageFlows",
+          "url": "https://pageflows.com/",
+          "description": "Recorded user flows from real products; useful for onboarding and checkout patterns."
+        },
+        {
+          "name": "Mobbin",
+          "url": "https://mobbin.com/",
+          "description": "Mobile and web UI pattern library from shipped products."
+        },
+        {
+          "name": "Canva",
+          "url": "https://www.canva.com/",
+          "description": "Quick ad creatives and social images; not a landing page tool."
+        },
+        {
+          "name": "Figma",
+          "url": "https://www.figma.com/",
+          "description": "Design and handoff; the default for teams with a designer."
+        },
+        {
+          "name": "落地页超市 / Culolo",
+          "url": "https://culolo.online/",
+          "description": "291 ready-made landing pages with live demo sites and a demo backend for each.",
+          "maintainedByUs": true
+        }
+      ]
+    },
+    {
+      "id": "link-routing-short-links",
+      "titleZh": "分流与短链",
+      "titleEn": "Link routing & short links",
+      "items": [
+        {
+          "name": "Bitly",
+          "url": "https://bitly.com/",
+          "description": "The default short link service; simple analytics and QR codes."
+        },
+        {
+          "name": "Dub",
+          "url": "https://dub.co/",
+          "description": "Link management with conversion tracking; developer-friendly API."
+        },
+        {
+          "name": "Short.io",
+          "url": "https://short.io/",
+          "description": "Branded short links with team access and retargeting integrations."
+        },
+        {
+          "name": "Rebrandly",
+          "url": "https://www.rebrandly.com/",
+          "description": "Custom-domain short links with click analytics."
+        },
+        {
+          "name": "分流短链 / IpCloak Link",
+          "url": "https://link.ipcloak.ai/",
+          "description": "Route one link to multiple agents by weight, with per-recipient attribution.",
+          "maintainedByUs": true
+        },
+        {
+          "name": "Cloudflare Workers",
+          "url": "https://workers.cloudflare.com/",
+          "description": "Roll your own router if you need full control; more engineering time."
+        }
+      ]
+    },
+    {
+      "id": "whatsapp-support-lead-management",
+      "titleZh": "客服与线索管理",
+      "titleEn": "WhatsApp, support & lead management",
+      "items": [
+        {
+          "name": "WhatsApp Business",
+          "url": "https://business.whatsapp.com/",
+          "description": "Official business app and API entry point."
+        },
+        {
+          "name": "WATI",
+          "url": "https://www.wati.io/",
+          "description": "WhatsApp team inbox, automation, and broadcast for SMBs."
+        },
+        {
+          "name": "Respond.io",
+          "url": "https://respond.io/",
+          "description": "Multi-channel inbox with routing and lead assignment."
+        },
+        {
+          "name": "ManyChat",
+          "url": "https://manychat.com/",
+          "description": "Chat automation across WhatsApp, Instagram, and Messenger."
+        },
+        {
+          "name": "Chatwoot",
+          "url": "https://www.chatwoot.com/",
+          "description": "Open-source customer engagement platform; self-hostable.",
+          "tags": [
+            "open-source",
+            "self-hosted"
+          ]
+        },
+        {
+          "name": "Intercom",
+          "url": "https://www.intercom.com/",
+          "description": "Support and lifecycle messaging for product-led teams."
+        },
+        {
+          "name": "出海狸 SCRM",
+          "url": "https://scrm.chuhaili.ai/",
+          "description": "Multi-account inbox and lead attribution for teams running several social accounts.",
+          "maintainedByUs": true
+        }
+      ]
+    },
+    {
+      "id": "pixels-analytics-attribution",
+      "titleZh": "像素与分析",
+      "titleEn": "Pixels, analytics & attribution",
+      "items": [
+        {
+          "name": "Google Analytics 4",
+          "url": "https://analytics.google.com/",
+          "description": "Free web analytics; the baseline for most ad accounts."
+        },
+        {
+          "name": "Meta Pixel docs",
+          "url": "https://developers.facebook.com/docs/meta-pixel/",
+          "description": "Official Pixel setup and event reference."
+        },
+        {
+          "name": "Google Tag Assistant",
+          "url": "https://tagassistant.google.com/",
+          "description": "Verify Google tags and events on a page."
+        },
+        {
+          "name": "Microsoft Clarity",
+          "url": "https://clarity.microsoft.com/",
+          "description": "Free session recordings and heatmaps."
+        },
+        {
+          "name": "Hotjar",
+          "url": "https://www.hotjar.com/",
+          "description": "Heatmaps, recordings, and feedback widgets."
+        },
+        {
+          "name": "Plausible",
+          "url": "https://plausible.io/",
+          "description": "Privacy-friendly, lightweight analytics."
+        },
+        {
+          "name": "Umami",
+          "url": "https://umami.is/",
+          "description": "Open-source, self-hostable analytics.",
+          "tags": [
+            "open-source",
+            "self-hosted"
+          ]
+        },
+        {
+          "name": "PostHog",
+          "url": "https://posthog.com/",
+          "description": "Product analytics with funnels, recordings, and experiments."
+        },
+        {
+          "name": "Matomo",
+          "url": "https://matomo.org/",
+          "description": "Open-source analytics you can host yourself.",
+          "tags": [
+            "open-source",
+            "self-hosted"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "utm-campaign-tracking",
+      "titleZh": "UTM 与投放追踪",
+      "titleEn": "UTM & campaign tracking",
+      "items": [
+        {
+          "name": "Google Campaign URL Builder",
+          "url": "https://ga-dev-tools.google.com/campaign-url-builder/",
+          "description": "Official UTM link builder."
+        },
+        {
+          "name": "UTM.io",
+          "url": "https://utm.io/",
+          "description": "UTM governance and link management for teams."
+        },
+        {
+          "name": "utm-builder",
+          "url": "https://github.com/{ORG}/utm-builder",
+          "description": "Offline, no-tracking UTM generator we use internally; open source.",
+          "maintainedByUs": true,
+          "tags": [
+            "open-source"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ad-research-creative",
+      "titleZh": "广告情报与素材",
+      "titleEn": "Ad research & creative",
+      "items": [
+        {
+          "name": "Meta Ad Library",
+          "url": "https://www.facebook.com/ads/library/",
+          "description": "See active ads from any advertiser on Meta."
+        },
+        {
+          "name": "TikTok Creative Center",
+          "url": "https://ads.tiktok.com/business/creativecenter/",
+          "description": "Top ads, trends, and creative inspiration by market."
+        },
+        {
+          "name": "Foreplay",
+          "url": "https://www.foreplay.co/",
+          "description": "Ad creative library and swipe file for teams."
+        },
+        {
+          "name": "AdSpy",
+          "url": "https://adspy.com/",
+          "description": "Paid ad search across Facebook and Instagram.",
+          "tags": [
+            "paid"
+          ]
+        },
+        {
+          "name": "Similarweb",
+          "url": "https://www.similarweb.com/",
+          "description": "Traffic and audience estimates for competitor sites."
+        },
+        {
+          "name": "Semrush",
+          "url": "https://www.semrush.com/",
+          "description": "SEO, ads, and competitive research."
+        },
+        {
+          "name": "Ahrefs",
+          "url": "https://ahrefs.com/",
+          "description": "Backlink and keyword research."
+        },
+        {
+          "name": "Google Trends",
+          "url": "https://trends.google.com/",
+          "description": "Seasonality and market interest by region."
+        }
+      ]
+    },
+    {
+      "id": "localization",
+      "titleZh": "多语言与本地化",
+      "titleEn": "Localization",
+      "items": [
+        {
+          "name": "Weglot",
+          "url": "https://www.weglot.com/",
+          "description": "Website translation layer with automatic language switching."
+        },
+        {
+          "name": "Lokalise",
+          "url": "https://lokalise.com/",
+          "description": "Translation management for product and marketing copy."
+        },
+        {
+          "name": "Crowdin",
+          "url": "https://crowdin.com/",
+          "description": "Localization platform with community and team workflows."
+        },
+        {
+          "name": "Phrase",
+          "url": "https://phrase.com/",
+          "description": "Enterprise localization suite."
+        },
+        {
+          "name": "DeepL",
+          "url": "https://www.deepl.com/",
+          "description": "Machine translation; good first pass, always human-review the checkout and legal copy."
+        }
+      ]
+    },
+    {
+      "id": "open-source-building-blocks",
+      "titleZh": "开源基建",
+      "titleEn": "Open-source building blocks",
+      "items": [
+        {
+          "name": "Astro",
+          "url": "https://astro.build/",
+          "description": "Content-first static site framework; good for SEO content sites."
+        },
+        {
+          "name": "Next.js",
+          "url": "https://nextjs.org/",
+          "description": "React framework for app-like pages."
+        },
+        {
+          "name": "Tailwind CSS",
+          "url": "https://tailwindcss.com/",
+          "description": "Utility CSS; fast to build consistent pages."
+        },
+        {
+          "name": "GitHub Pages",
+          "url": "https://pages.github.com/",
+          "description": "Free static hosting for docs and content sites (not for commercial landing pages)."
+        },
+        {
+          "name": "Cloudflare Pages",
+          "url": "https://pages.cloudflare.com/",
+          "description": "Static hosting with a global CDN and custom domains."
+        },
+        {
+          "name": "Vercel",
+          "url": "https://vercel.com/",
+          "description": "Frontend hosting and previews."
+        }
+      ]
+    },
+    {
+      "id": "communities-learning",
+      "titleZh": "社区与学习",
+      "titleEn": "Communities & learning",
+      "items": [
+        {
+          "name": "Product Hunt",
+          "url": "https://www.producthunt.com/",
+          "description": "Launch and discovery; good for tooling."
+        },
+        {
+          "name": "Indie Hackers",
+          "url": "https://www.indiehackers.com/",
+          "description": "Build-in-public community for small software teams."
+        },
+        {
+          "name": "r/PPC",
+          "url": "https://www.reddit.com/r/PPC/",
+          "description": "Paid search and social practitioners.",
+          "tags": [
+            "paid"
+          ]
+        },
+        {
+          "name": "r/SEO",
+          "url": "https://www.reddit.com/r/SEO/",
+          "description": "SEO practitioners; read the rules before posting."
+        },
+        {
+          "name": "白鲸出海",
+          "url": "https://www.baijingapp.com/",
+          "description": "中文出海行业媒体，覆盖应用、电商、游戏。"
+        },
+        {
+          "name": "雨果跨境",
+          "url": "https://www.cifnews.com/",
+          "description": "中文跨境电商媒体与社区。"
+        },
+        {
+          "name": "Hacker News",
+          "url": "https://news.ycombinator.com/",
+          "description": "Technical audience; only post if it is genuinely useful."
+        }
+      ]
+    }
+  ]
+}

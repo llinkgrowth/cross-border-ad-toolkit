@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{t.pwa.meta.title}}</title>
+<meta name="description" content="{{t.pwa.meta.description}}">
+<meta name="theme-color" content="#0b1f3a">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg: #081426;
+    --bg-soft: #0e2036;
+    --surface: #12283f;
+    --surface-2: #17334e;
+    --ink: #edf4fb;
+    --ink-soft: #a9c0d6;
+    --ink-faint: #7794ad;
+    --line: #24405a;
+    --accent: #4cc9f0;
+    --accent-2: #8b7cf6;
+    --accent-ink: #04222e;
+    --ok: #6ee7b7;
+    --radius: 20px;
+    --radius-sm: 12px;
+    --shadow: 0 24px 60px rgba(0, 0, 0, .35);
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Naskh Arabic", "Noto Sans Arabic", "Microsoft YaHei", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0 16px 64px;
+    background:
+      radial-gradient(circle at 80% -10%, rgba(139, 124, 246, .35), transparent 45%),
+      radial-gradient(circle at 8% 30%, rgba(76, 201, 240, .18), transparent 40%),
+      var(--bg);
+    color: var(--ink);
+    font: 16px/1.65 var(--font);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .page { max-width: 980px; margin: 0 auto; }
+
+  /* ---------- language switcher (injected by the builder) ---------- */
+  .i18n-switcher { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .i18n-switcher__label {
+    font-size: 12px; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--ink-faint); margin-inline-end: 4px;
+  }
+  .i18n-switcher__link {
+    padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px;
+    background: rgba(18, 40, 63, .8); color: var(--ink-soft); font-size: 12px; text-decoration: none;
+  }
+  .i18n-switcher__link:hover { border-color: var(--accent); color: var(--accent); }
+  .i18n-switcher__link[aria-current="true"] {
+    background: rgba(76, 201, 240, .14); border-color: var(--accent); color: var(--accent); font-weight: 600;
+  }
+
+  /* ---------- header ---------- */
+  .site-header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px; padding-block: 20px;
+  }
+  .demo-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border: 1px dashed var(--line); border-radius: 999px;
+    background: rgba(18, 40, 63, .6); color: var(--ink-faint); font-size: 12px;
+  }
+  .demo-badge::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+    gap: 30px; align-items: center; padding-block: 26px 18px;
+  }
+  .eyebrow {
+    display: inline-block; margin-block-end: 12px; padding: 4px 10px; border-radius: 999px;
+    background: rgba(76, 201, 240, .14); color: var(--accent);
+    font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  }
+  h1 { margin: 0 0 12px; font-size: clamp(30px, 5.4vw, 48px); line-height: 1.1; letter-spacing: -.02em; }
+  .hero p { margin: 0 0 20px; max-width: 46ch; color: var(--ink-soft); }
+  .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+  .social { color: var(--ink-faint); font-size: 13px; }
+  .social strong { color: var(--ink); font-size: 16px; }
+
+  .button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 48px; padding: 11px 24px; border: 0; border-radius: 999px;
+    background: linear-gradient(120deg, var(--accent), #67e8f9);
+    color: var(--accent-ink); font: inherit; font-size: 15px; font-weight: 700;
+    text-decoration: none; cursor: pointer; transition: filter .15s ease, transform .15s ease;
+  }
+  .button:hover { filter: brightness(1.06); }
+  .button:active { transform: translateY(1px); }
+  .button:disabled {
+    background: var(--surface-2); color: var(--ink-faint); cursor: not-allowed; filter: none;
+  }
+  .button.ghost {
+    background: transparent; border: 1px solid var(--line); color: var(--ink-soft); font-weight: 600;
+  }
+
+  .phone {
+    position: relative; justify-self: center;
+    width: min(240px, 70vw); aspect-ratio: 9 / 18;
+    padding: 10px; border-radius: 34px;
+    background: linear-gradient(160deg, #1d3a56, #0c1c2e);
+    box-shadow: var(--shadow), inset 0 0 0 1px rgba(255, 255, 255, .08);
+  }
+  .phone::before {
+    content: ""; position: absolute; inset-inline: 34%; inset-block-start: 12px;
+    block-size: 14px; border-radius: 999px; background: #08121f;
+  }
+  .phone-screen {
+    block-size: 100%; border-radius: 26px; overflow: hidden;
+    background: linear-gradient(180deg, #17334e, #0d2036);
+    display: flex; flex-direction: column;
+  }
+  .phone-screen .bar {
+    margin: 26px 14px 0; block-size: 8px; border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+  .phone-screen .card {
+    margin: 12px 14px 0; padding: 10px; border-radius: 10px; background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(255, 255, 255, .08);
+  }
+  .phone-screen .line { block-size: 7px; border-radius: 999px; background: rgba(255, 255, 255, .18); }
+  .phone-screen .line + .line { margin-block-start: 7px; }
+  .phone-screen .line.short { inline-size: 55%; }
+  .phone-screen .accent-line { background: linear-gradient(90deg, var(--accent-2), var(--accent)); }
+
+  section { margin-block-start: 38px; }
+  h2 { margin: 0 0 6px; font-size: clamp(21px, 3.2vw, 28px); letter-spacing: -.01em; }
+  .section-lead { margin: 0 0 18px; color: var(--ink-soft); font-size: 14px; }
+
+  /* ---------- screenshot bar ---------- */
+  .shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .shot {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 14px; border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--surface); box-shadow: var(--shadow);
+  }
+  .shot-visual {
+    aspect-ratio: 4 / 5; border-radius: var(--radius-sm);
+    background: linear-gradient(160deg, #17334e, #0b1a2c);
+    border: 1px solid rgba(255, 255, 255, .06);
+    padding: 12px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .shot-visual .pill {
+    block-size: 26px; border-radius: 8px; background: rgba(76, 201, 240, .18);
+    border: 1px solid rgba(76, 201, 240, .3);
+  }
+  .shot-visual .rows { display: grid; gap: 6px; margin-block-start: auto; }
+  .shot-visual .row { block-size: 8px; border-radius: 999px; background: rgba(255, 255, 255, .16); }
+  .shot-visual .row:nth-child(2) { inline-size: 78%; }
+  .shot-visual .row:nth-child(3) { inline-size: 54%; }
+  .shot-visual.alt { background: linear-gradient(160deg, #2a2350, #151026); }
+  .shot-visual.offline { background: linear-gradient(160deg, #103a33, #08201d); }
+  .shot-caption { color: var(--ink-soft); font-size: 13px; text-align: center; }
+
+  /* ---------- features ---------- */
+  .features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  .feature {
+    padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface);
+  }
+  .feature .icon {
+    display: grid; place-items: center; inline-size: 38px; block-size: 38px;
+    border-radius: 12px; margin-block-end: 12px;
+    background: rgba(76, 201, 240, .12); color: var(--accent); font-size: 18px;
+  }
+  .feature h3 { margin: 0 0 6px; font-size: 16px; }
+  .feature p { margin: 0; color: var(--ink-soft); font-size: 14px; }
+
+  /* ---------- install ---------- */
+  .install-card {
+    padding: 24px; border: 1px solid var(--line); border-radius: var(--radius);
+    background: linear-gradient(160deg, var(--surface), var(--bg-soft));
+    box-shadow: var(--shadow);
+  }
+  .install-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22px; }
+  .install-steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+  .install-steps li { display: flex; gap: 10px; color: var(--ink-soft); font-size: 14px; }
+  .install-steps .step-no {
+    flex: none; display: grid; place-items: center; inline-size: 22px; block-size: 22px;
+    border-radius: 50%; background: rgba(76, 201, 240, .16); color: var(--accent);
+    font-size: 12px; font-weight: 700; margin-block-start: 1px;
+  }
+  .install-panel {
+    display: flex; flex-direction: column; gap: 12px; justify-content: center;
+    padding: 18px; border-radius: var(--radius-sm);
+    background: rgba(8, 20, 38, .55); border: 1px solid var(--line);
+  }
+  .install-status {
+    margin: 0; min-height: 44px; color: var(--ink-soft); font-size: 13px;
+    padding-inline-start: 10px; border-inline-start: 2px solid var(--accent);
+  }
+  .install-panel .button { inline-size: 100%; }
+  .install-hint { margin: 0; color: var(--ink-faint); font-size: 12px; }
+
+  /* ---------- offline ---------- */
+  .offline-card {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 22px 24px; border-radius: var(--radius);
+    border: 1px solid var(--line); background: var(--surface);
+  }
+  .offline-card h2 { margin: 0 0 4px; font-size: 20px; }
+  .offline-card p { margin: 0; color: var(--ink-soft); font-size: 14px; max-width: 60ch; }
+  .net-status {
+    display: inline-flex; align-items: center; gap: 8px; flex: none;
+    padding: 7px 14px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--ok); font-size: 13px; font-weight: 600;
+  }
+  .net-status::before {
+    content: ""; inline-size: 8px; block-size: 8px; border-radius: 50%; background: currentColor;
+  }
+  .net-status[data-online="false"] { color: #fca5a5; }
+
+  /* ---------- FAQ ---------- */
+  .faq { display: grid; gap: 10px; }
+  details {
+    border: 1px solid var(--line); border-radius: var(--radius-sm);
+    background: var(--surface); padding: 0 16px;
+  }
+  summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 15px 0; font-size: 14px; font-weight: 650; cursor: pointer; list-style: none;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--accent); font-size: 18px; line-height: 1; }
+  details[open] summary::after { content: "−"; }
+  details p { margin: 0 0 14px; color: var(--ink-soft); font-size: 14px; }
+
+  footer {
+    margin-block-start: 38px; padding-block-start: 18px; border-block-start: 1px solid var(--line);
+    color: var(--ink-faint); font-size: 12px; line-height: 1.8;
+  }
+  footer p { margin: 0; }
+
+  @media (max-width: 820px) {
+    .hero { grid-template-columns: 1fr; }
+    .phone { order: -1; width: min(200px, 56vw); }
+    .shots, .features { grid-template-columns: 1fr; }
+    .install-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="site-header">
+    <span class="demo-badge">{{t.common.demo.badge}}</span>
+    <!-- I18N:SWITCHER -->
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <span class="eyebrow">{{t.pwa.hero.badge}}</span>
+        <h1>{{t.pwa.hero.title}}</h1>
+        <p>{{t.pwa.hero.subtitle}}</p>
+        <div class="hero-actions">
+          <button class="button" type="button" id="hero-install">{{t.pwa.hero.cta}}</button>
+          <span class="social"><strong>{{n.installs}}</strong> {{t.pwa.hero.socialProof}}</span>
+        </div>
+        <p class="social">{{t.pwa.hero.note}}</p>
+      </div>
+      <div class="phone" aria-hidden="true">
+        <div class="phone-screen">
+          <div class="bar"></div>
+          <div class="card">
+            <div class="line accent-line"></div>
+            <div class="line short"></div>
+          </div>
+          <div class="card">
+            <div class="line"></div>
+            <div class="line short"></div>
+            <div class="line"></div>
+          </div>
+          <div class="card">
+            <div class="line accent-line"></div>
+            <div class="line"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>{{t.pwa.shots.title}}</h2>
+      <div class="shots">
+        <figure class="shot">
+          <div class="shot-visual">
+            <div class="pill"></div>
+            <div class="rows"><div class="row"></div><div class="row"></div><div class="row"></div></div>
+          </div>
+          <figcaption class="shot-caption">{{t.pwa.shots.one}}</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="shot-visual alt">
+            <div class="pill"></div>
+            <div class="rows"><div class="row"></div><div class="row"></div><div class="row"></div></div>
+          </div>
+          <figcaption class="shot-caption">{{t.pwa.shots.two}}</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="shot-visual offline">
+            <div class="pill"></div>
+            <div class="rows"><div class="row"></div><div class="row"></div><div class="row"></div></div>
+          </div>
+          <figcaption class="shot-caption">{{t.pwa.shots.three}}</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section>
+      <h2>{{t.pwa.features.title}}</h2>
+      <div class="features">
+        <div class="feature">
+          <div class="icon" aria-hidden="true">⚡</div>
+          <h3>{{t.pwa.features.speed.title}}</h3>
+          <p>{{t.pwa.features.speed.body}}</p>
+        </div>
+        <div class="feature">
+          <div class="icon" aria-hidden="true">⛺</div>
+          <h3>{{t.pwa.features.offline.title}}</h3>
+          <p>{{t.pwa.features.offline.body}}</p>
+        </div>
+        <div class="feature">
+          <div class="icon" aria-hidden="true">▣</div>
+          <h3>{{t.pwa.features.install.title}}</h3>
+          <p>{{t.pwa.features.install.body}}</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="install">
+      <h2>{{t.pwa.install.title}}</h2>
+      <div class="install-card">
+        <div class="install-grid">
+          <ol class="install-steps">
+            <li><span class="step-no">1</span><span>{{t.pwa.install.step1}}</span></li>
+            <li><span class="step-no">2</span><span>{{t.pwa.install.step2}}</span></li>
+            <li><span class="step-no">3</span><span>{{t.pwa.install.step3}}</span></li>
+          </ol>
+          <div class="install-panel">
+            <p class="install-status" id="install-status" role="status">{{t.pwa.install.waiting}}</p>
+            <button class="button" type="button" id="install-button" disabled>{{t.pwa.install.button}}</button>
+            <p class="install-hint">{{t.pwa.install.unsupported}}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="offline-card">
+        <div>
+          <h2>{{t.pwa.offline.title}}</h2>
+          <p>{{t.pwa.offline.body}}</p>
+        </div>
+        <span class="net-status" id="net-status" data-online="true">{{t.pwa.offline.online}}</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>{{t.pwa.faq.title}}</h2>
+      <div class="faq">
+        <details>
+          <summary>{{t.pwa.faq.q1}}</summary>
+          <p>{{t.pwa.faq.a1}}</p>
+        </details>
+        <details>
+          <summary>{{t.pwa.faq.q2}}</summary>
+          <p>{{t.pwa.faq.a2}}</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>{{t.common.demo.note}}</p>
+    <p>{{t.pwa.footer.note}}</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var installStatus = document.getElementById('install-status');
+  var installButton = document.getElementById('install-button');
+  var heroButton = document.getElementById('hero-install');
+  var netStatus = document.getElementById('net-status');
+  var deferredPrompt = null;
+
+  /* 状态文案来自已翻译的模板本身，JS 只负责切换。 */
+  var STATUS = {
+    ready: '{{t.pwa.install.ready}}',
+    installed: '{{t.pwa.install.installed}}',
+    dismissed: '{{t.pwa.install.dismissed}}',
+    unsupported: '{{t.pwa.install.unsupported}}',
+    unavailable: '{{t.pwa.offline.unavailable}}'
+  };
+  var NET = {
+    online: '{{t.pwa.offline.online}}',
+    offline: '{{t.pwa.offline.offline}}'
+  };
+
+  function setStatus(text) {
+    installStatus.textContent = text;
+  }
+
+  function setOnline(online) {
+    netStatus.setAttribute('data-online', String(online));
+    netStatus.textContent = online ? NET.online : NET.offline;
+  }
+
+  /* 拦截浏览器安装提示，改由页面按钮触发。 */
+  window.addEventListener('beforeinstallprompt', function (event) {
+    event.preventDefault();
+    deferredPrompt = event;
+    installButton.disabled = false;
+    setStatus(STATUS.ready);
+  });
+
+  window.addEventListener('appinstalled', function () {
+    deferredPrompt = null;
+    installButton.disabled = true;
+    setStatus(STATUS.installed);
+  });
+
+  function promptInstall() {
+    if (!deferredPrompt) {
+      setStatus(STATUS.unsupported);
+      return;
+    }
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function (choice) {
+      setStatus(choice.outcome === 'accepted' ? STATUS.installed : STATUS.dismissed);
+      deferredPrompt = null;
+      installButton.disabled = true;
+    });
+  }
+
+  installButton.addEventListener('click', promptInstall);
+  heroButton.addEventListener('click', promptInstall);
+
+  window.addEventListener('online', function () { setOnline(true); });
+  window.addEventListener('offline', function () { setOnline(false); });
+  setOnline(navigator.onLine);
+
+  /* 离线缓存骨架：file:// 下注册会失败，静默跳过，不影响页面本身。 */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () {
+        setStatus(STATUS.unavailable);
+      });
+    });
+  } else {
+    setStatus(STATUS.unavailable);
+  }
+})();
+</script>
+</body>
+</html>

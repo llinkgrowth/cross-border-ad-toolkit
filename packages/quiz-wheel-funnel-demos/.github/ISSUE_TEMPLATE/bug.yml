@@ -1,0 +1,46 @@
+name: Bug report / 问题反馈
+description: Quiz 问答计分偏差、转盘权重/角度异常、localStorage 防刷锁失效或 WebView 跳出问题
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！请提供脱敏后的复现命令或输入参数，请勿粘贴真实生产环境客户链接或密钥。
+  - type: input
+    id: command
+    attributes:
+      label: 复现命令或配置
+      description: CLI 命令或页面沙盒输入
+      placeholder: "node cli.mjs route-quiz --answers \"q1:b,q2:a,q3:c\" --json"
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果
+      description: 实际看到的分流结果、转盘旋转角度或报错信息
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: 涉及模块
+      options:
+        - 核心漏斗状态机 (src/funnel-engine.mjs)
+        - 命令行工具 (cli.mjs)
+        - 双 Tab 离线演示沙盒 (index.html)
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: 运行环境
+      description: Node.js 版本 / 浏览器 / 操作系统
+      placeholder: "Node 20.11 / Chrome 126 / macOS"

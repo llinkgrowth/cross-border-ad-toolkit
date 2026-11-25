@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Node 20 · zero-dependency checks
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Syntax check engine and CLI
+        run: |
+          node --check src/retention-engine.mjs
+          node --check cli.mjs
+
+      - name: Unit tests (node --test, zero network)
+        run: npm test
+
+      - name: CLI smoke tests
+        run: |
+          node cli.mjs --help > /dev/null
+          node cli.mjs manifest --name PulsePlay --short Pulse --start-url /offer --json > /dev/null
+          node cli.mjs simulate-trigger --trigger both --dwell-ms 4500 --away-sec 12 --json > /dev/null
+          node cli.mjs detect-pwa --ua "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1" --json > /dev/null
+
+      - name: Offline sandbox must not reference external resources
+        run: |
+          if grep -nE "https?://|@import|src=\"[^\"]+\"" index.html; then
+            echo "index.html 里出现了外部资源引用，沙盒必须离线可用"
+            exit 1
+          fi
+          echo "index.html: no external requests"

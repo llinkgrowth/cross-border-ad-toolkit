@@ -1,0 +1,20 @@
+{
+  "name": "landing-page-checklist",
+  "version": "0.1.0",
+  "description": "落地页上线前 37 项检查清单 + 零依赖自动检查器 CLI",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "IpCloak",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "landing-page-checklist": "./checker.mjs"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node checker.mjs",
+    "lint": "node --check checker.mjs && node --check test/checker.test.mjs"
+  }
+}

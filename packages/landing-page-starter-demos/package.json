@@ -1,0 +1,27 @@
+{
+  "name": "landing-page-starter-demos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "3 套零依赖落地页微模板骨架（COD / WhatsApp / PWA）+ 多语言 RTL 构建与校验器",
+  "type": "module",
+  "license": "MIT",
+  "author": "IpCloak",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node cli.mjs check-i18n",
+    "list": "node cli.mjs list"
+  },
+  "keywords": [
+    "landing-page",
+    "templates",
+    "utm",
+    "rtl",
+    "i18n",
+    "pwa",
+    "cod",
+    "zero-dependency"
+  ]
+}

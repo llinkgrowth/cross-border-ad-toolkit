@@ -1,0 +1,27 @@
+{
+  "name": "shortlink-rotator-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zero-dependency multi-target shortlink rotator & social deeplink builder: 4 routing modes (random / weighted / round_robin / quota), sticky cookie session, attribution pass-through, Cloudflare Worker edge 302 demo & CLI/HTML simulator.",
+  "type": "module",
+  "license": "MIT",
+  "author": "IpCloak",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "simulate": "node cli.mjs simulate wa-vip --clicks 1000",
+    "check": "node --test && node cli.mjs simulate promo-quota --clicks 1000"
+  },
+  "keywords": [
+    "shortlink",
+    "link-rotator",
+    "whatsapp-rotator",
+    "weighted-routing",
+    "cloudflare-workers",
+    "deeplink",
+    "utm-attribution",
+    "zero-dependency"
+  ]
+}

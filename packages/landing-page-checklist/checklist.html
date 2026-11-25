@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>落地页上线前检查清单 · 37 项</title>
+<meta name="description" content="落地页上线前 37 项检查清单，分 7 组，可勾选、带进度条、本地保存、可打印。">
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --card: #fff;
+    --ink: #111827;
+    --ink-2: #4b5563;
+    --ink-3: #6b7280;
+    --line: #e5e7eb;
+    --accent: #0f766e;
+    --accent-soft: #ecfdf5;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(17, 24, 39, .04), 0 8px 24px rgba(17, 24, 39, .06);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 24px 16px 64px;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap { max-width: 800px; margin: 0 auto; }
+
+  /* ---------- 头部 ---------- */
+  .hero { margin-bottom: 18px; }
+  .hero h1 {
+    margin: 0 0 6px;
+    font-size: clamp(21px, 5vw, 27px);
+    line-height: 1.3;
+    letter-spacing: -.01em;
+  }
+  .hero p { margin: 0; color: var(--ink-2); font-size: 14px; }
+
+  /* ---------- 进度条 ---------- */
+  .progress-card {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px 18px;
+    margin-bottom: 18px;
+  }
+  .progress-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .progress-top strong { font-size: 15px; color: var(--accent); }
+  .progress-top span { color: var(--ink-3); }
+
+  .track {
+    height: 8px;
+    border-radius: 999px;
+    background: #eef0f3;
+    overflow: hidden;
+  }
+  .fill {
+    height: 100%;
+    width: 0;
+    border-radius: 999px;
+    background: var(--accent);
+    transition: width .25s ease;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .btn {
+    padding: 6px 13px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--ink-2);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ---------- 分组 ---------- */
+  .group {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .group h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0 0 4px;
+    font-size: 16px;
+  }
+  .group h2 em {
+    font-style: normal;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--ink-3);
+  }
+  .group .count {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--ink-3);
+  }
+
+  /* ---------- 条目 ---------- */
+  .item {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 10px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .item:first-of-type { border-top: 0; }
+
+  .item input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    border: 0;
+  }
+
+  .box {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    border: 1.5px solid #c9ced6;
+    border-radius: 6px;
+    background: #fff;
+    transition: all .15s;
+    position: relative;
+  }
+  .box::after {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) scale(0);
+    transition: transform .15s;
+  }
+  .item input:focus-visible + .box {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .item input:checked + .box {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .item input:checked + .box::after { transform: rotate(45deg) scale(1); }
+
+  .body { min-width: 0; }
+  .title { font-weight: 600; font-size: 14px; }
+  .title em {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-left: 6px;
+  }
+  .pass, .fix {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .fix { color: var(--ink-3); }
+
+  .item input:checked ~ .body .title { color: var(--ink-3); text-decoration: line-through; }
+  .item input:checked ~ .body .pass,
+  .item input:checked ~ .body .fix { opacity: .55; }
+
+  /* ---------- 页脚 ---------- */
+  footer {
+    margin-top: 26px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--ink-3);
+  }
+  footer p { margin: 0; }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ---------- 打印 ---------- */
+  @media print {
+    @page { margin: 14mm; }
+    body { background: #fff; padding: 0; font-size: 11pt; }
+    .hero { margin-bottom: 10px; }
+    .progress-card {
+      position: static;
+      box-shadow: none;
+      border: 1px solid var(--line);
+      margin-bottom: 10px;
+    }
+    .toolbar { display: none !important; }
+    .group { box-shadow: none; break-inside: avoid; padding: 10px 14px; }
+    .item { break-inside: avoid; padding: 7px 0; }
+    .item input:checked ~ .body .title { text-decoration: line-through; }
+    footer { margin-top: 12px; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <header class="hero">
+    <h1>落地页上线前检查清单</h1>
+    <p>37 项 · 7 组。勾选状态自动保存在本机浏览器，关掉再打开还在；点「打印」可直接出 PDF。</p>
+  </header>
+
+  <section class="progress-card">
+    <div class="progress-top">
+      <strong id="progressText">0 / 37</strong>
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="track" role="progressbar" aria-valuemin="0" aria-valuemax="37"
+         aria-valuenow="0" id="progressBar">
+      <div class="fill" id="fill"></div>
+    </div>
+    <div class="toolbar">
+      <button class="btn" id="printBtn" type="button">打印 / 存 PDF</button>
+      <button class="btn" id="resetBtn" type="button">全部清空</button>
+    </div>
+  </section>
+
+  <div id="groups"></div>
+
+  <footer>
+    <p>清单为通用技术核对项，不构成对投放结果、平台审核或账号状态的任何说明或承诺。</p>
+    <p>配套可选工具：<a href="https://builder.ipcloak.ai" rel="noopener">builder.ipcloak.ai</a>（291 套模板 / 69 种语言）· MIT License</p>
+  </footer>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'landing-checklist:done';
+
+  var GROUPS = [
+    {
+      id: 'g1',
+      title: '首屏',
+      en: 'Above the Fold',
+      items: [
+        {
+          id: 'g1-1',
+          title: '三秒说清「给谁 + 解决什么」',
+          en: '3-second clarity',
+          pass: '陌生人只看首屏，就知道这是什么、给谁用、能解决哪个具体问题。',
+          fix: '把「行业 + 产品 + 结果」压进一句主标题，副标题只补一句限定条件。'
+        },
+        {
+          id: 'g1-2',
+          title: '主标题只有一个主张',
+          en: 'One headline, one claim',
+          pass: '标题里只出现一个核心利益点，没有「既……又……还……」。',
+          fix: '拆成「主标题 + 三条要点」，主标题只留最值钱的那一条。'
+        },
+        {
+          id: 'g1-3',
+          title: '主按钮在首屏可见',
+          en: 'Primary CTA above the fold',
+          pass: '不滚动就能看到主按钮，文案是动词（立即咨询 / 查看方案 / 获取报价）。',
+          fix: '收缩首屏高度，把按钮提到标题下方 100px 以内。'
+        },
+        {
+          id: 'g1-4',
+          title: '首屏视觉与业务相关',
+          en: 'Relevant hero visual',
+          pass: '首图能让目标客户一眼认出「这是给我看的」，不是通用商务图库。',
+          fix: '换成产品真实界面、真实使用场景，或一张能说明流程的结构图。'
+        },
+        {
+          id: 'g1-5',
+          title: '手机首屏不被遮挡',
+          en: 'Mobile first screen',
+          pass: '手机竖屏打开，主标题与主按钮完整可见，不需要横向滑动。',
+          fix: '给首屏加断点下的最小高度，图片用 object-fit: cover 并限制高度。'
+        },
+        {
+          id: 'g1-6',
+          title: '慢网下首屏不白屏',
+          en: 'No blank hero',
+          pass: '网络慢时首屏先出现文字与布局，不会整片空白两秒。',
+          fix: '图片加 loading="lazy" 与显式宽高，字体用系统字体栈兜底。'
+        }
+      ]
+    },
+    {
+      id: 'g2',
+      title: '内容与信任',
+      en: 'Content & Trust',
+      items: [
+        {
+          id: 'g2-1',
+          title: '每一屏都有信息增量',
+          en: 'Every section earns its scroll',
+          pass: '删掉任何一屏，读者都不会丢失关键信息。',
+          fix: '合并重复段落，把「我们很专业」类空话换成具体做了什么。'
+        },
+        {
+          id: 'g2-2',
+          title: '卖点写成可验证的事实',
+          en: 'Claims are verifiable',
+          pass: '所有数字与结论都能指出来源（公开页面、后台截图、可复现的操作）。',
+          fix: '删掉无法证实的形容，改成「支持什么 / 包含什么 / 怎么做到」。'
+        },
+        {
+          id: 'g2-3',
+          title: '展示真实的信任要素',
+          en: 'Real trust signals',
+          pass: '展示的是可核对的内容（团队、办公场景、公开案例结构、服务流程），不编造客户名与数据。',
+          fix: '没有可公开的客户就讲流程与交付边界，讲清「做什么、不做什么」。'
+        },
+        {
+          id: 'g2-4',
+          title: '常见疑问在页面上有答案',
+          en: 'Objections answered',
+          pass: '费用问询、交付范围、售后方式、时效这四类问题，页面里都能找到答案。',
+          fix: '加一个 FAQ 区块，用客户原话当小标题。'
+        },
+        {
+          id: 'g2-5',
+          title: '没有夸大与绝对化表述',
+          en: 'No absolute wording',
+          pass: '没有极限化、绝对化的用词，也没有无法兑现的承诺词。',
+          fix: '换成范围与条件描述，把绝对说法降级成具体做法。'
+        },
+        {
+          id: 'g2-6',
+          title: '段落短、可扫读',
+          en: 'Scannable copy',
+          pass: '每段不超过 3 行，小标题能单独读懂，不靠通读全文。',
+          fix: '一句一行，长段拆成 2–3 条要点，重点加粗不超过两处。'
+        }
+      ]
+    },
+    {
+      id: 'g3',
+      title: '表单与 CTA',
+      en: 'Forms & CTA',
+      items: [
+        {
+          id: 'g3-1',
+          title: '表单字段只留必要项',
+          en: 'Minimal fields',
+          pass: '每个字段都能回答「为什么必须现在填」；能删的先删。',
+          fix: '先只留「联系方式 + 需求」两个字段，其余等首轮沟通后再补。'
+        },
+        {
+          id: 'g3-2',
+          title: '字段有输入提示与校验',
+          en: 'Inline validation',
+          pass: '格式错误时即时提示，提示语说明「怎么改」，不是只标红。',
+          fix: '错误文案写在字段下方，同时加 aria-invalid 与 aria-describedby。'
+        },
+        {
+          id: 'g3-3',
+          title: '提交后有明确反馈',
+          en: 'Clear submit feedback',
+          pass: '点击提交后 1 秒内出现加载态，成功后出现下一步说明。',
+          fix: '按钮切「提交中」并禁用，成功后替换成结果区块，不要只弹一个提示。'
+        },
+        {
+          id: 'g3-4',
+          title: '主 CTA 在页面中重复出现',
+          en: 'Repeat the CTA',
+          pass: '至少每两屏出现一次同义主按钮。',
+          fix: '在长页面每个信息区块末尾补一个按钮，链接指向同一个锚点。'
+        },
+        {
+          id: 'g3-5',
+          title: '联系方式真实可达',
+          en: 'Reachable contact',
+          pass: '邮箱、表单、客服入口至少一个能正常收到消息，且有人在看。',
+          fix: '发一条测试消息验证；没有人力值守就先别挂客服入口。'
+        }
+      ]
+    },
+    {
+      id: 'g4',
+      title: '技术与速度',
+      en: 'Tech & Speed',
+      items: [
+        {
+          id: 'g4-1',
+          title: '首屏最大内容 2.5 秒内出现',
+          en: 'LCP under 2.5s',
+          pass: '真实网络（非本地）下，首屏最大内容元素 2.5 秒内渲染完成。',
+          fix: '压缩首图、减少首屏脚本、关键 CSS 内联。'
+        },
+        {
+          id: 'g4-2',
+          title: '图片已压缩且指定尺寸',
+          en: 'Optimized images',
+          pass: '图片有明确宽高，格式为 WebP / AVIF，单张控制在 200KB 以内。',
+          fix: '批量转格式，加 srcset 适配不同屏宽。'
+        },
+        {
+          id: 'g4-3',
+          title: '控制台无报错',
+          en: 'No console errors',
+          pass: '打开开发者工具，Console 与 Network 里没有红色报错与 404。',
+          fix: '逐个修掉资源路径错误，删掉引用了但没用到的脚本。'
+        },
+        {
+          id: 'g4-4',
+          title: '页面链接全部可用',
+          en: 'No dead links',
+          pass: '页面上每个链接点开都不是 404，外链也不是死链。',
+          fix: '上线前用链接检查工具扫一遍，外链加 rel="noopener"。'
+        },
+        {
+          id: 'g4-5',
+          title: '基础 SEO 标签齐全',
+          en: 'Basic SEO tags',
+          pass: 'title、description、canonical、og:image 齐全，且与页面内容一致。',
+          fix: '每个页面单独写 title 与 description，别全站复制同一段。'
+        },
+        {
+          id: 'g4-6',
+          title: '有兜底页',
+          en: 'Fallback pages',
+          pass: '错误链接与异常状态有可读的兜底页，并给出回首页的入口。',
+          fix: '做一个 404 页，放主按钮和一句「可能已经下线」。'
+        }
+      ]
+    },
+    {
+      id: 'g5',
+      title: '像素与事件',
+      en: 'Pixels & Events',
+      items: [
+        {
+          id: 'g5-1',
+          title: '像素只加载一次',
+          en: 'Pixel loaded once',
+          pass: '页面源码里同一个像素脚本没有被重复注入。',
+          fix: '把像素初始化收到页面顶部统一执行，禁止在组件里二次引入。'
+        },
+        {
+          id: 'g5-2',
+          title: '事件命名统一',
+          en: 'Consistent event naming',
+          pass: '事件名与参数表和团队约定一致，大小写与下划线规则固定。',
+          fix: '先写一张事件表（名称 / 参数 / 触发时机），再按表埋点。'
+        },
+        {
+          id: 'g5-3',
+          title: '关键动作都有埋点',
+          en: 'Key actions tracked',
+          pass: '主按钮点击、表单提交、成功页展示都有对应事件。',
+          fix: '从「用户完成目标」倒推，缺哪一步补哪一步。'
+        },
+        {
+          id: 'g5-4',
+          title: '用调试工具验证过',
+          en: 'Verified in debugger',
+          pass: '用平台自带的事件调试工具能看到事件真实上报，参数值正确。',
+          fix: '本地用调试模式跑一遍，确认事件名与参数没有拼写错误。'
+        },
+        {
+          id: 'g5-5',
+          title: '参数与投放链接对齐',
+          en: 'Params match UTM',
+          pass: '页面能读取到的 utm_* 参数，与广告后台里配置的链接一致。',
+          fix: '统一用一份链接生成规则，投放前抽查三条链接的完整参数。'
+        }
+      ]
+    },
+    {
+      id: 'g6',
+      title: '多语言与本地化',
+      en: 'Multi-language & Localization',
+      items: [
+        {
+          id: 'g6-1',
+          title: '语言与投放地区匹配',
+          en: 'Language matches market',
+          pass: '投哪个地区就默认显示对应语言，不依赖用户手动切换。',
+          fix: '按浏览器语言做默认，把切换器放在页头显眼位置。'
+        },
+        {
+          id: 'g6-2',
+          title: '翻译是人工校对过的',
+          en: 'Human-reviewed translation',
+          pass: '没有明显机翻痕迹、没有中英混排、没有同一名词两种译法。',
+          fix: '核心页面的标题、按钮、错误提示必须人工过一遍。'
+        },
+        {
+          id: 'g6-3',
+          title: '数字、日期、货币格式符合当地习惯',
+          en: 'Localized formats',
+          pass: '日期顺序、货币符号、电话区号都按目标市场书写。',
+          fix: '用 Intl.DateTimeFormat 与 Intl.NumberFormat 本地化，别手写字符串。'
+        },
+        {
+          id: 'g6-4',
+          title: '长语言不撑破布局',
+          en: 'No text overflow',
+          pass: '德语、俄语这类长语言下，按钮与标题不换行挤出容器。',
+          fix: '弹性容器加 min-width: 0，按钮不要写死宽度。'
+        }
+      ]
+    },
+    {
+      id: 'g7',
+      title: '合规与上线',
+      en: 'Compliance & Launch',
+      items: [
+        {
+          id: 'g7-1',
+          title: '隐私说明与免责声明齐全',
+          en: 'Privacy & disclaimer',
+          pass: '页面上有隐私说明和免责声明的入口，且能正常打开。',
+          fix: '放页脚固定链接，内容只写事实与边界，不写承诺。'
+        },
+        {
+          id: 'g7-2',
+          title: '没有任何结果承诺',
+          en: 'No outcome promises',
+          pass: '全站找不到对审核结果、投放效果或收益的承诺类表述。',
+          fix: '把承诺改成「我们负责做什么」，把结果交给规则与实际执行。'
+        },
+        {
+          id: 'g7-3',
+          title: '不出现受限类目内容',
+          en: 'No restricted content',
+          pass: '公开页面不放受限类目的素材、截图与案例。',
+          fix: '只展示电商、工具、应用下载这类合规案例，截图里的客户信息打码。'
+        },
+        {
+          id: 'g7-4',
+          title: '上线前完整走一遍',
+          en: 'Full end-to-end pass',
+          pass: '从广告链接点进来，到提交成功，全程无断点、无死链、无疑问卡点。',
+          fix: '用手机真机加弱网各走一遍，记录每一步耗时。'
+        },
+        {
+          id: 'g7-5',
+          title: '有回滚与备份',
+          en: 'Rollback ready',
+          pass: '上线前的版本有备份，出问题能在 10 分钟内切回。',
+          fix: '发布前打一个 tag 或导出静态文件，写清回滚步骤。'
+        }
+      ]
+    }
+  ];
+
+  var TOTAL = 0;
+  GROUPS.forEach(function (group) { TOTAL += group.items.length; });
+
+  var els = {
+    groups: document.getElementById('groups'),
+    fill: document.getElementById('fill'),
+    progressBar: document.getElementById('progressBar'),
+    progressText: document.getElementById('progressText'),
+    progressPct: document.getElementById('progressPct'),
+    printBtn: document.getElementById('printBtn'),
+    resetBtn: document.getElementById('resetBtn')
+  };
+
+  var done = load();
+
+  function load() {
+    try {
+      var data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      return data && typeof data === 'object' ? data : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(done));
+    } catch (e) {
+      /* 隐私模式下写入失败时静默忽略 */
+    }
+  }
+
+  function updateProgress() {
+    var count = 0;
+    GROUPS.forEach(function (group) {
+      group.items.forEach(function (item) {
+        if (done[item.id]) count += 1;
+      });
+    });
+
+    var pct = TOTAL ? Math.round((count / TOTAL) * 100) : 0;
+    els.fill.style.width = pct + '%';
+    els.progressText.textContent = count + ' / ' + TOTAL;
+    els.progressPct.textContent = pct + '%';
+    els.progressBar.setAttribute('aria-valuenow', String(count));
+  }
+
+  function makeItem(item) {
+    var label = document.createElement('label');
+    label.className = 'item';
+
+    var input = document.createElement('input');
+    input.type = 'checkbox';
+    input.checked = Boolean(done[item.id]);
+    input.addEventListener('change', function () {
+      if (input.checked) {
+        done[item.id] = true;
+      } else {
+        delete done[item.id];
+      }
+      save();
+      updateProgress();
+    });
+
+    var box = document.createElement('span');
+    box.className = 'box';
+    box.setAttribute('aria-hidden', 'true');
+
+    var body = document.createElement('div');
+    body.className = 'body';
+
+    var title = document.createElement('div');
+    title.className = 'title';
+    title.textContent = item.title;
+
+    var en = document.createElement('em');
+    en.textContent = item.en;
+    title.appendChild(en);
+
+    var pass = document.createElement('p');
+    pass.className = 'pass';
+    pass.textContent = '判断标准：' + item.pass;
+
+    body.appendChild(title);
+    body.appendChild(pass);
+
+    if (item.fix) {
+      var fix = document.createElement('p');
+      fix.className = 'fix';
+      fix.textContent = '不合格怎么改：' + item.fix;
+      body.appendChild(fix);
+    }
+
+    label.appendChild(input);
+    label.appendChild(box);
+    label.appendChild(body);
+    return label;
+  }
+
+  function render() {
+    GROUPS.forEach(function (group) {
+      var section = document.createElement('section');
+      section.className = 'group';
+
+      var heading = document.createElement('h2');
+      heading.textContent = group.title;
+
+      var en = document.createElement('em');
+      en.textContent = group.en;
+      heading.appendChild(en);
+
+      var count = document.createElement('span');
+      count.className = 'count';
+      count.textContent = group.items.length + ' 项';
+      heading.appendChild(count);
+
+      section.appendChild(heading);
+      group.items.forEach(function (item) {
+        section.appendChild(makeItem(item));
+      });
+      els.groups.appendChild(section);
+    });
+  }
+
+  els.printBtn.addEventListener('click', function () {
+    window.print();
+  });
+
+  els.resetBtn.addEventListener('click', function () {
+    if (!window.confirm('确定清空全部勾选记录？')) return;
+    done = {};
+    save();
+    Array.prototype.forEach.call(
+      document.querySelectorAll('.item input'),
+      function (input) { input.checked = false; }
+    );
+    updateProgress();
+  });
+
+  render();
+  updateProgress();
+})();
+</script>
+</body>
+</html>

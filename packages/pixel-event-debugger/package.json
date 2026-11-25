@@ -1,0 +1,30 @@
+{
+  "name": "pixel-event-debugger",
+  "version": "1.0.0",
+  "description": "Zero-dependency cross-platform ad pixel event mapper (Meta, TikTok, GA4), deterministic deduplication event_id generator, click ID parser (_fbc), static payload/HTML linter, and offline sandbox debugger.",
+  "type": "module",
+  "main": "./src/pixel-bridge.mjs",
+  "bin": {
+    "pixel-event-debugger": "./cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test test/pixel.test.mjs",
+    "check": "node cli.mjs map --action purchase --value 49.9 --currency USD && node cli.mjs lint index.html"
+  },
+  "keywords": [
+    "meta-pixel",
+    "tiktok-pixel",
+    "ga4",
+    "conversion-tracking",
+    "event-deduplication",
+    "fbclid",
+    "ttclid",
+    "gclid",
+    "landing-page"
+  ],
+  "author": "IpCloak Engineering",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

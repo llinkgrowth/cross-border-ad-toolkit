@@ -1,0 +1,25 @@
+{
+  "name": "utm-builder",
+  "version": "1.0.0",
+  "private": true,
+  "description": "离线可用的 UTM 链接生成器：纯函数核心 + CLI + 确定性构建，零第三方依赖。",
+  "type": "module",
+  "license": "MIT",
+  "author": "IpCloak",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check",
+    "cli": "node cli.mjs"
+  },
+  "keywords": [
+    "utm",
+    "url-builder",
+    "marketing",
+    "offline",
+    "zero-dependency"
+  ]
+}

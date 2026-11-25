@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>互动问答漏斗 (Quiz/StepFlow) & 幸运转盘 (PrizeWheel) 离线沙盒 · quiz-wheel-funnel-demos</title>
+  <meta name="description" content="零依赖、离线可用的广告落地页互动组件演示沙盒：3 步问答测试分支路由 + WhatsApp 预填话术 + 本地加权转盘开奖防刷锁 + FB/IG/TikTok 内置浏览器跳出辅助。" />
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --surface: #131b2e;
+      --surface-alt: #1b2642;
+      --border: #2a3a5e;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-hover: #0ea5e9;
+      --accent: #34d399;
+      --warn: #fbbf24;
+      --danger: #f87171;
+      --radius: 10px;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      padding: 24px 16px 64px;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 18px;
+      margin-bottom: 22px;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--primary);
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .top-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .top-bar label {
+      font-size: 12.5px;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 8px 11px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 13px;
+      font-family: var(--font-mono);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .tab-btn {
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #061320;
+      border-color: var(--primary);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 920px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      font-size: 17px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card h2 span.sub {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-weight: 400;
+    }
+
+    .step-indicator {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .step-pill {
+      flex: 1;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      text-align: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .step-pill.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .step-pill.done {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .question-box {
+      margin-bottom: 16px;
+    }
+
+    .question-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .option-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .option-card {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: border-color 0.15s, transform 0.1s;
+    }
+
+    .option-card:hover {
+      border-color: var(--primary);
+    }
+
+    .option-card.selected {
+      border-color: var(--accent);
+      background: rgba(52, 211, 153, 0.12);
+    }
+
+    .option-meta {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .result-banner {
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 14px;
+      margin-top: 14px;
+    }
+
+    .result-banner h3 {
+      font-size: 15px;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .url-preview {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--primary);
+      background: var(--surface-alt);
+      padding: 10px;
+      border-radius: 6px;
+      word-break: break-all;
+      margin-top: 8px;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button.btn {
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 9px 15px;
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #061320;
+    }
+
+    .btn-secondary {
+      background: var(--surface-alt);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .wheel-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+    }
+
+    .wheel-wrapper {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      margin-bottom: 16px;
+    }
+
+    .wheel-pointer {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-top: 22px solid var(--warn);
+      z-index: 5;
+    }
+
+    #wheel-svg {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      border: 4px solid var(--border);
+      transition: transform 2.4s cubic-bezier(0.18, 0.85, 0.25, 1);
+    }
+
+    pre.json-inspector {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #a5f3fc;
+      overflow-x: auto;
+      max-height: 460px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    footer {
+      margin-top: 28px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge-row">
+        <span class="badge">Zero-Dependency ES Module</span>
+        <span class="badge">Quiz StepFlow Router</span>
+        <span class="badge">Weighted PrizeWheel + Idempotent Lock</span>
+        <span class="badge">FB/IG/TikTok WebView Handoff</span>
+      </div>
+      <h1>Quiz / StepFlow & PrizeWheel Funnel Sandbox · 互动问答漏斗与幸运转盘离线沙盒</h1>
+      <p>纯前端零依赖互动转化组件：Tab 1 体验 3 步卡片问答评分与 WhatsApp 预填标签路由；Tab 2 体验加权 SVG 转盘开奖、旋转角度计算与 <code>localStorage</code> 防刷幂等锁。</p>
+    </header>
+
+    <!-- Global Attribution & WebView Bar -->
+    <div class="top-bar">
+      <div style="flex: 1.3; min-width: 240px;">
+        <label for="global-url">模拟入口广告 URL（带 UTM 与 fbclid / ttclid 归因参数）</label>
+        <input type="text" id="global-url" value="https://lp.example.com/skin-quiz?utm_source=tiktok&utm_medium=cpc&utm_campaign=q4_glow&ttclid=E.C.P.889900" />
+      </div>
+      <div style="flex: 1; min-width: 220px;">
+        <label for="global-ua">模拟访问端容器 (User-Agent WebView 环境)</label>
+        <select id="global-ua">
+          <option value="Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/UQ1A; wv) [FBAN/FB4A;FBAV/440.0]">Android · Facebook 内置浏览器 (FBAN/FB4A)</option>
+          <option value="Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) Mobile/21E219 [FBAN/FBIOS;FBAV/455.0]">iOS · Facebook/Instagram 内置浏览器 (FBIOS)</option>
+          <option value="Mozilla/5.0 (Linux; Android 14; SM-S918B) BytedanceWebview/d8a21c6 musical_ly_33.5.0">Android · TikTok 内置浏览器 (BytedanceWebview)</option>
+          <option value="Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 Chrome/126.0.0.0 Safari/537.36">Standard Chrome / Safari 标准系统浏览器</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Dual Tabs -->
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab-btn active" id="tab-btn-quiz" role="tab" aria-selected="true">Tab 1 · Quiz 3 步问答分支分流 (StepFlow)</button>
+      <button type="button" class="tab-btn" id="tab-btn-wheel" role="tab" aria-selected="false">Tab 2 · 幸运转盘加权开奖 & 防刷锁 (PrizeWheel)</button>
+    </div>
+
+    <div class="main-grid">
+      <!-- Left Interactive Panel -->
+      <div>
+        <!-- TAB 1: QUIZ STEPFLOW -->
+        <section class="card" id="panel-quiz">
+          <h2>
+            <span>3 步互动问答测试 · 膚质诊断与接待路由</span>
+            <span class="sub">evaluateQuizFunnel()</span>
+          </h2>
+
+          <div class="step-indicator" id="quiz-steps-bar"></div>
+          <div id="quiz-question-area"></div>
+
+          <div class="result-banner" id="quiz-result-box">
+            <h3 id="quiz-tier-title">命中分流层：等待完成或实时预览</h3>
+            <p style="font-size: 13px; margin-bottom: 6px;" id="quiz-summary-text"></p>
+            <div class="url-preview" id="quiz-wa-url"></div>
+            <div class="url-preview" id="quiz-handoff-preview" style="color: var(--warn); margin-top: 6px;"></div>
+          </div>
+
+          <div class="btn-row">
+            <button type="button" class="btn btn-secondary" id="btn-quiz-reset">重置问答步骤</button>
+            <button type="button" class="btn btn-primary" id="btn-quiz-preset-vip">一键填充高意向 VIP 路径</button>
+            <button type="button" class="btn btn-secondary" id="btn-quiz-preset-budget">一键填充价格敏感领券路径</button>
+          </div>
+        </section>
+
+        <!-- TAB 2: PRIZE WHEEL -->
+        <section class="card hidden" id="panel-wheel">
+          <h2>
+            <span>本地加权幸运转盘 · 6 扇区 + localStorage 幂等锁</span>
+            <span class="sub">spinPrizeWheel()</span>
+          </h2>
+
+          <div class="wheel-stage">
+            <div class="wheel-wrapper">
+              <div class="wheel-pointer"></div>
+              <svg id="wheel-svg" viewBox="-100 -100 200 200" aria-label="6-Sector Prize Wheel"></svg>
+            </div>
+
+            <div class="btn-row">
+              <button type="button" class="btn btn-primary" id="btn-spin-wheel">立即抽奖 (Spin Wheel)</button>
+              <button type="button" class="btn btn-secondary" id="btn-clear-lock">清除 localStorage 防刷锁</button>
+            </div>
+          </div>
+
+          <div class="result-banner" id="wheel-result-box">
+            <h3 id="wheel-win-title">点击「立即抽奖」抽出加权扇区并写入本地幂等锁</h3>
+            <p style="font-size: 13px;" id="wheel-angle-info"></p>
+            <div class="url-preview" id="wheel-cta-url"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right State Machine Inspector -->
+      <div>
+        <section class="card">
+          <h2>
+            <span>实时状态机 JSON & 归因透传检查器</span>
+            <span class="sub">Live State Output</span>
+          </h2>
+          <pre class="json-inspector" id="state-json-output" aria-live="polite"></pre>
+        </section>
+      </div>
+    </div>
+
+    <footer>
+      <p>
+        MIT 开源套件 · 零外部依赖核心实现见 <code>src/funnel-engine.mjs</code> ·
+        可视化拖拽落地页构建器见 <a href="https://builder.ipcloak.ai?utm_source=github&utm_medium=repo&utm_campaign=quiz-wheel-funnel-demos" rel="noopener">builder.ipcloak.ai</a> ·
+        更多出海增长工具见 <a href="https://culolo.online?utm_source=github&utm_medium=repo&utm_campaign=quiz-wheel-funnel-demos" rel="noopener">culolo.online</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    const QUIZ_STEPS = [
+      {
+        id: 'q1',
+        key: 'SkinType',
+        question: 'Step 1/3 · 洁面 2 小时后，你的皮肤通常是什么状态？',
+        options: [
+          { id: 'a', label: '紧绷起皮（干性 Dry）', value: 'Dry', score: 30, tags: ['high_intent', 'hydration_focus'] },
+          { id: 'b', label: '全脸泛油（油性 Oily）', value: 'Oily', score: 25, tags: ['oil_control'] },
+          { id: 'c', label: 'T 区油两颊干（混合 Combo）', value: 'Combo', score: 20, tags: ['balanced_care'] },
+          { id: 'd', label: '泛红易敏（敏感 Sensitive）', value: 35, value: 'Sensitive', score: 35, tags: ['high_intent', 'barrier_repair'] },
+        ],
+      },
+      {
+        id: 'q2',
+        key: 'Goal',
+        question: 'Step 2/3 · 未来 30 天你最核心的改善目标是什么？',
+        options: [
+          { id: 'a', label: '紧致淡纹（抗初老 AntiAging）', value: 'AntiAging', score: 40, tags: ['high_intent', 'premium_tier'] },
+          { id: 'b', label: '提亮淡印（焕亮 Brightening）', value: 'Brightening', score: 30, tags: ['high_intent'] },
+          { id: 'c', label: '舒缓修护屏障（Soothing）', value: 'Soothing', score: 25, tags: ['barrier_repair'] },
+          { id: 'd', label: '日常基础保湿（Maintenance）', value: 'Maintenance', score: 10, tags: ['budget_sensitive'] },
+        ],
+      },
+      {
+        id: 'q3',
+        key: 'Timeline',
+        question: 'Step 3/3 · 你希望什么时候开始定制护理方案？',
+        options: [
+          { id: 'a', label: '立即开始 · 需要 1 对 1 顾问配方案', value: 'Immediate', score: 40, tags: ['urgent', 'high_intent'] },
+          { id: 'b', label: '本周内了解看看', value: 'ThisWeek', score: 25, tags: ['warm_lead'] },
+          { id: 'c', label: '先领新人优惠券自己逛逛', value: 'Browsing', score: 10, tags: ['budget_sensitive'] },
+        ],
+      },
+    ];
+
+    const WHEEL_SECTORS = [
+      { id: 'sec-10off', label: '10% OFF 券', weight: 35, couponCode: 'WELCOME10', color: '#1e3a8a', ctaUrl: 'https://shop.example.com/claim?tier=10off' },
+      { id: 'sec-15off', label: '15% 套装券', weight: 25, couponCode: 'BUNDLE15', color: '#0f766e', ctaUrl: 'https://shop.example.com/claim?tier=15off' },
+      { id: 'sec-freeship', label: '免跨境运费', weight: 20, couponCode: 'FREESHIP', color: '#1d4ed8', ctaUrl: 'https://shop.example.com/claim?tier=freeship' },
+      { id: 'sec-gift', label: '赠旅行装+顾问', weight: 12, couponCode: 'GIFTWA', color: '#047857', ctaUrl: 'https://wa.me/6581009001?text=Hi%21%20I%20unlocked%20GIFTWA' },
+      { id: 'sec-vip25', label: '25% VIP 专享', weight: 5, couponCode: 'VIP25', color: '#7c2d12', ctaUrl: 'https://wa.me/6581009001?text=Hi%21%20I%20unlocked%20VIP25' },
+      { id: 'sec-bonus5', label: '$5 无门槛金', weight: 3, couponCode: 'CREDIT5', color: '#3730a3', ctaUrl: 'https://shop.example.com/claim?tier=credit5' },
+    ];
+
+    const STORAGE_KEY = 'ipcloak_wheel_lock_summer-promo-wheel-v1';
+    let currentStepIndex = 0;
+    let quizAnswers = { q1: 'a', q2: 'a', q3: 'a' };
+
+    function preserveAttribution(baseUrl, incomingUrl) {
+      const preserved = {};
+      try {
+        const dest = new URL(baseUrl);
+        const src = new URL(incomingUrl);
+        for (const [k, v] of src.searchParams.entries()) {
+          const low = k.toLowerCase();
+          if ((low.startsWith('utm_') || ['fbclid', 'ttclid', 'gclid'].includes(low)) && v) {
+            preserved[k] = v;
+            if (!dest.searchParams.has(k)) dest.searchParams.set(k, v);
+          }
+        }
+        return { finalUrl: dest.toString(), preserved };
+      } catch {
+        return { finalUrl: baseUrl, preserved };
+      }
+    }
+
+    function buildHandoff(ua, targetUrl) {
+      const isFB = /FBAN|FBAV|FBIOS|FB4A/i.test(ua);
+      const isIG = /Instagram/i.test(ua);
+      const isTT = /BytedanceWebview|musical_ly|TikTok/i.test(ua);
+      const isInApp = isFB || isIG || isTT;
+      const appName = isFB ? 'facebook' : isIG ? 'instagram' : isTT ? 'tiktok' : 'standard_browser';
+      const os = /android/i.test(ua) ? 'android' : /iphone|ipad/i.test(ua) ? 'ios' : 'other';
+
+      if (!isInApp) {
+        return { isInAppWebView: false, appName, os, action: 'direct_redirect', handoffHint: '标准浏览器：直接 302 / Location 唤起目标链接' };
+      }
+      const u = new URL(targetUrl);
+      const hostPath = u.host + u.pathname + u.search;
+      if (os === 'android') {
+        const intentUrl = `intent://${hostPath}#Intent;scheme=https;action=android.intent.action.VIEW;S.browser_fallback_url=${encodeURIComponent(targetUrl)};end`;
+        return { isInAppWebView: true, appName, os, action: 'android_intent_wakeup', androidIntentUrl: intentUrl };
+      }
+      return {
+        isInAppWebView: true,
+        appName,
+        os,
+        action: 'show_ios_safari_guide',
+        iosGuideText: '检测到 iOS 内置 WebView：弹出右上角 [•••] 引导浮层，提示「在默认浏览器 Safari 中打开」以防唤起失败',
+      };
+    }
+
+    function evaluateQuizState() {
+      let totalScore = 0;
+      const tagCounts = {};
+      const details = [];
+
+      QUIZ_STEPS.forEach((step) => {
+        const ansId = quizAnswers[step.id] || 'a';
+        const opt = step.options.find((o) => o.id === ansId) || step.options[0];
+        totalScore += opt.score;
+        opt.tags.forEach((t) => {
+          tagCounts[t] = (tagCounts[t] || 0) + 1;
+        });
+        details.push({ stepId: step.id, key: step.key, optionId: opt.id, value: opt.value, score: opt.score, tags: opt.tags });
+      });
+
+      const sortedTags = Object.keys(tagCounts).sort((a, b) => tagCounts[b] - tagCounts[a]);
+      const primaryTag = sortedTags[0] || 'general';
+      const summaryTag = `[Quiz: ${details.map((d) => d.key + '=' + d.value).join(' | ')}]`;
+
+      let matchedRoute = {
+        id: 'route-coupon-checkout',
+        tier: 'self_serve_coupon',
+        label: '普通意向 · 标准领券与自助下单页',
+        baseUrl: 'https://shop.example.com/starter-bundle',
+      };
+
+      if (totalScore >= 80 && tagCounts.high_intent) {
+        matchedRoute = {
+          id: 'route-vip-whatsapp',
+          tier: 'vip_concierge',
+          label: '高意向 VIP 专线 · 资深护肤顾问 1 对 1 WhatsApp',
+          baseUrl: 'https://wa.me/6581009001',
+        };
+      } else if (totalScore >= 60 && tagCounts.urgent) {
+        matchedRoute = {
+          id: 'route-urgent-whatsapp',
+          tier: 'priority_support',
+          label: '紧急需求专线 · 快速响应顾问 WhatsApp',
+          baseUrl: 'https://wa.me/6581009002',
+        };
+      }
+
+      const prefilledMessage = `Hi Specialist! Here is my diagnostic result: ${summaryTag} (Score: ${totalScore}, Segment: ${primaryTag})`;
+      const u = new URL(matchedRoute.baseUrl);
+      if (u.hostname === 'wa.me') {
+        u.searchParams.set('text', prefilledMessage);
+      } else {
+        u.searchParams.set('quiz_summary', summaryTag);
+        u.searchParams.set('quiz_score', String(totalScore));
+      }
+
+      const incomingUrl = document.getElementById('global-url').value;
+      const ua = document.getElementById('global-ua').value;
+      const { finalUrl, preserved } = preserveAttribution(u.toString(), incomingUrl);
+      const handoff = buildHandoff(ua, finalUrl);
+
+      return {
+        mode: 'QuizStepFlow',
+        totalScore,
+        primaryTag,
+        tagCounts,
+        summaryTag,
+        matchedRoute,
+        prefilledMessage,
+        destinationUrl: finalUrl,
+        preservedAttribution: preserved,
+        webviewHandoff: handoff,
+      };
+    }
+
+    function renderQuizUI() {
+      const stepsBar = document.getElementById('quiz-steps-bar');
+      stepsBar.innerHTML = QUIZ_STEPS.map((st, idx) => {
+        const cls = idx === currentStepIndex ? 'step-pill active' : 'step-pill done';
+        const chosen = st.options.find((o) => o.id === quizAnswers[st.id]);
+        return `<div class="${cls}" data-step="${idx}" style="cursor:pointer;">${st.key}: ${chosen ? chosen.value : '-'}</div>`;
+      }).join('');
+
+      stepsBar.querySelectorAll('.step-pill').forEach((el) => {
+        el.addEventListener('click', () => {
+          currentStepIndex = Number(el.getAttribute('data-step'));
+          renderQuizUI();
+        });
+      });
+
+      const step = QUIZ_STEPS[currentStepIndex];
+      const qArea = document.getElementById('quiz-question-area');
+      qArea.innerHTML = `
+        <div class="question-box">
+          <div class="question-title">${step.question}</div>
+          <div class="option-list">
+            ${step.options
+              .map(
+                (opt) => `
+              <div class="option-card ${quizAnswers[step.id] === opt.id ? 'selected' : ''}" data-opt="${opt.id}">
+                <span>${opt.label}</span>
+                <span class="option-meta">+${opt.score}分 · [${opt.tags.join(', ')}]</span>
+              </div>
+            `
+              )
+              .join('')}
+          </div>
+        </div>
+      `;
+
+      qArea.querySelectorAll('.option-card').forEach((card) => {
+        card.addEventListener('click', () => {
+          quizAnswers[step.id] = card.getAttribute('data-opt');
+          if (currentStepIndex < QUIZ_STEPS.length - 1) {
+            currentStepIndex++;
+          }
+          renderQuizUI();
+        });
+      });
+
+      const state = evaluateQuizState();
+      document.getElementById('quiz-tier-title').textContent =
+        `路由决策：${state.matchedRoute.label}（得分 ${state.totalScore} · 主标签 ${state.primaryTag}）`;
+      document.getElementById('quiz-summary-text').textContent =
+        `预填话术编码：${state.prefilledMessage}`;
+      document.getElementById('quiz-wa-url').textContent =
+        `最终跳转 URL (含 UTM/ClickID 透传): ${state.destinationUrl}`;
+      document.getElementById('quiz-handoff-preview').textContent =
+        state.webviewHandoff.androidIntentUrl
+          ? `Android 内置浏览器跳出 Intent: ${state.webviewHandoff.androidIntentUrl}`
+          : state.webviewHandoff.iosGuideText || state.webviewHandoff.handoffHint;
+
+      document.getElementById('state-json-output').textContent = JSON.stringify(state, null, 2);
+    }
+
+    function renderWheelSvg() {
+      const svg = document.getElementById('wheel-svg');
+      const count = WHEEL_SECTORS.length;
+      const sliceDeg = 360 / count;
+      let paths = '';
+
+      for (let i = 0; i < count; i++) {
+        const startAngle = (i * sliceDeg - 90) * (Math.PI / 180);
+        const endAngle = ((i + 1) * sliceDeg - 90) * (Math.PI / 180);
+        const x1 = Math.cos(startAngle) * 98;
+        const y1 = Math.sin(startAngle) * 98;
+        const x2 = Math.cos(endAngle) * 98;
+        const y2 = Math.sin(endAngle) * 98;
+        const midAngle = ((i + 0.5) * sliceDeg - 90) * (Math.PI / 180);
+        const tx = Math.cos(midAngle) * 58;
+        const ty = Math.sin(midAngle) * 58;
+        const rotateText = (i + 0.5) * sliceDeg;
+
+        paths += `
+          <path d="M 0 0 L ${x1.toFixed(2)} ${y1.toFixed(2)} A 98 98 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)} Z"
+                fill="${WHEEL_SECTORS[i].color}" stroke="#0b0f19" stroke-width="1.5" />
+          <text x="${tx.toFixed(2)}" y="${ty.toFixed(2)}" fill="#ffffff" font-size="7.5" font-weight="600"
+                text-anchor="middle" dominant-baseline="middle"
+                transform="rotate(${rotateText}, ${tx.toFixed(2)}, ${ty.toFixed(2)})">
+            ${WHEEL_SECTORS[i].couponCode}
+          </text>
+        `;
+      }
+      paths += `<circle cx="0" cy="0" r="14" fill="#0b0f19" stroke="#38bdf8" stroke-width="3" />`;
+      svg.innerHTML = paths;
+    }
+
+    function executeWheelSpin(forceNew = false) {
+      let saved = null;
+      if (!forceNew) {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) saved = JSON.parse(raw);
+        } catch {}
+      }
+
+      let chosenIdx = 0;
+      let locked = false;
+
+      if (saved && typeof saved.sectorIndex === 'number') {
+        chosenIdx = saved.sectorIndex;
+        locked = true;
+      } else {
+        const totalW = WHEEL_SECTORS.reduce((s, sec) => s + sec.weight, 0);
+        let r = Math.random() * totalW;
+        let cum = 0;
+        for (let i = 0; i < WHEEL_SECTORS.length; i++) {
+          cum += WHEEL_SECTORS[i].weight;
+          if (r < cum) {
+            chosenIdx = i;
+            break;
+          }
+        }
+      }
+
+      const sector = WHEEL_SECTORS[chosenIdx];
+      const sectorAngleDeg = 360 / WHEEL_SECTORS.length;
+      const sectorCenterAngle = chosenIdx * sectorAngleDeg + sectorAngleDeg / 2;
+      const minSpins = 5;
+      const rotationDeg = 360 * minSpins + sectorCenterAngle;
+
+      if (!locked) {
+        try {
+          localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({
+              wheelId: 'summer-promo-wheel-v1',
+              sectorId: sector.id,
+              sectorIndex: chosenIdx,
+              couponCode: sector.couponCode,
+              sectorCenterAngle,
+              rotationDeg,
+            })
+          );
+        } catch {}
+      }
+
+      const svg = document.getElementById('wheel-svg');
+      svg.style.transform = `rotate(${360 * minSpins - sectorCenterAngle}deg)`;
+
+      const incomingUrl = document.getElementById('global-url').value;
+      const { finalUrl, preserved } = preserveAttribution(sector.ctaUrl, incomingUrl);
+
+      document.getElementById('wheel-win-title').textContent =
+        `${locked ? '🔒 幂等锁命中 (刷新不重抽)' : '🎉 新抽出奖品'}：${sector.label} · 兑换码 [${sector.couponCode}]`;
+      document.getElementById('wheel-angle-info').textContent =
+        `扇区索引: #${chosenIdx} | 中心角: ${sectorCenterAngle}° | 总旋转角: ${rotationDeg}° (360° × ${minSpins} + ${sectorCenterAngle}°)`;
+      document.getElementById('wheel-cta-url').textContent =
+        `兑奖跳转 CTA URL: ${finalUrl}`;
+
+      const state = {
+        mode: 'PrizeWheel',
+        wheelId: 'summer-promo-wheel-v1',
+        idempotentLocked: locked,
+        storageKey: STORAGE_KEY,
+        sectorIndex: chosenIdx,
+        sector,
+        sectorCenterAngle,
+        rotationDeg,
+        ctaUrl: finalUrl,
+        preservedAttribution: preserved,
+      };
+      document.getElementById('state-json-output').textContent = JSON.stringify(state, null, 2);
+    }
+
+    // Tab switching
+    document.getElementById('tab-btn-quiz').addEventListener('click', () => {
+      document.getElementById('tab-btn-quiz').classList.add('active');
+      document.getElementById('tab-btn-wheel').classList.remove('active');
+      document.getElementById('panel-quiz').classList.remove('hidden');
+      document.getElementById('panel-wheel').classList.add('hidden');
+      renderQuizUI();
+    });
+
+    document.getElementById('tab-btn-wheel').addEventListener('click', () => {
+      document.getElementById('tab-btn-wheel').classList.add('active');
+      document.getElementById('tab-btn-quiz').classList.remove('active');
+      document.getElementById('panel-wheel').classList.remove('hidden');
+      document.getElementById('panel-quiz').classList.add('hidden');
+      executeWheelSpin(false);
+    });
+
+    document.getElementById('btn-quiz-reset').addEventListener('click', () => {
+      currentStepIndex = 0;
+      quizAnswers = { q1: 'a', q2: 'a', q3: 'a' };
+      renderQuizUI();
+    });
+
+    document.getElementById('btn-quiz-preset-vip').addEventListener('click', () => {
+      quizAnswers = { q1: 'd', q2: 'a', q3: 'a' };
+      currentStepIndex = 2;
+      renderQuizUI();
+    });
+
+    document.getElementById('btn-quiz-preset-budget').addEventListener('click', () => {
+      quizAnswers = { q1: 'c', q2: 'd', q3: 'c' };
+      currentStepIndex = 2;
+      renderQuizUI();
+    });
+
+    document.getElementById('btn-spin-wheel').addEventListener('click', () => {
+      executeWheelSpin(false);
+    });
+
+    document.getElementById('btn-clear-lock').addEventListener('click', () => {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch {}
+      const svg = document.getElementById('wheel-svg');
+      svg.style.transform = 'rotate(0deg)';
+      document.getElementById('wheel-win-title').textContent = '已清除 localStorage 锁，点击「立即抽奖」将重新抽取扇区';
+    });
+
+    ['global-url', 'global-ua'].forEach((id) => {
+      document.getElementById(id).addEventListener('input', () => {
+        if (!document.getElementById('panel-quiz').classList.contains('hidden')) {
+          renderQuizUI();
+        } else {
+          executeWheelSpin(false);
+        }
+      });
+    });
+
+    // Init
+    renderWheelSvg();
+    renderQuizUI();
+  </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+name: Checklist suggestion / 清单条目建议
+description: 新增一项检查、调整判断标准或「不合格怎么改」
+title: "[checklist] "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: group
+    attributes:
+      label: 属于哪一组
+      options:
+        - 1. 首屏
+        - 2. 内容与信任
+        - 3. 表单与 CTA
+        - 4. 技术与速度
+        - 5. 像素与事件
+        - 6. 多语言与本地化
+        - 7. 合规与上线
+        - 新开一组
+    validations:
+      required: true
+  - type: textarea
+    id: item
+    attributes:
+      label: 条目内容
+      description: 一句判断标准；如果能自动检查，说明规则
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: 为什么值得加
+      description: 最好给一个真实翻车场景
+    validations:
+      required: true

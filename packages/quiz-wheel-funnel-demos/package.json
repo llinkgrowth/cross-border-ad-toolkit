@@ -1,0 +1,26 @@
+{
+  "name": "quiz-wheel-funnel-demos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zero-dependency interactive landing page funnel suite: Multi-step Quiz/StepFlow scoring & WhatsApp tag router, weighted PrizeWheel with localStorage idempotency lock, FB/IG/TikTok WebView intent:// handoff, CLI & offline sandbox.",
+  "type": "module",
+  "license": "MIT",
+  "author": "IpCloak",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --test && node cli.mjs simulate-wheel --spins 1000 && node cli.mjs route-quiz --answers \"q1:b,q2:a,q3:c\" --url \"https://example.com/lp?utm_source=tiktok&ttclid=TT99\" --json"
+  },
+  "keywords": [
+    "quiz-funnel",
+    "step-flow",
+    "prize-wheel",
+    "landing-page",
+    "whatsapp-marketing",
+    "in-app-browser",
+    "utm-attribution",
+    "zero-dependency"
+  ]
+}

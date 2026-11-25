@@ -1,0 +1,59 @@
+name: Bug report
+description: 报告一个可复现的问题（状态机、Manifest、CLI 或沙盒）
+title: "[bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。提 issue 前请先跑 `node --test`，确认不是本地环境问题。
+        请不要在 issue 里粘贴真实用户数据、Cookie、广告账户信息。
+  - type: dropdown
+    id: area
+    attributes:
+      label: 影响范围
+      options:
+        - 触发状态机（popstate / visibilitychange / mouseout）
+        - 频次与已转化静默
+        - Popup / Feed 视图模型
+        - PWA Manifest / Service Worker
+        - 安装策略识别（iOS / Android / WebView / standalone）
+        - CLI
+        - 离线沙盒 index.html
+        - 文档
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 运行 node --test
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果（含报错与版本）
+      placeholder: |
+        Node 版本：
+        浏览器/系统：
+        报错信息：
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 已运行 `node --test`，并确认失败可复现
+          required: true
+        - label: 没有粘贴真实用户数据或投放账户信息
+          required: true
