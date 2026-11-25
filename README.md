@@ -12,18 +12,18 @@ One repo. Ten public tools. Stars, commits, and search authority stay on this pa
 
 ## 工具
 
-| 目录 | 干什么 | 怎么试 |
-|---|---|---|
-| [packages/utm-builder](packages/utm-builder/) | 离线 UTM 链接 | `node packages/utm-builder/cli.mjs --help` |
-| [packages/landing-page-checklist](packages/landing-page-checklist/) | 37 项上线自检 + HTML 检查器 | `node packages/landing-page-checklist/checker.mjs --help` |
-| [packages/awesome-cross-border-marketing](packages/awesome-cross-border-marketing/) | 出海工具清单（数据生成 README） | `node packages/awesome-cross-border-marketing/scripts/build.mjs --check` |
-| [packages/cloak-integration-kit](packages/cloak-integration-kit/) | 访问规则对接：PHP 安装脚本、WP 插件、`ipcheck`、`utmcheck` | `node packages/cloak-integration-kit/cli.mjs --help` |
-| [packages/shortlink-rotator-demo](packages/shortlink-rotator-demo/) | 4 种分流 + WhatsApp / Telegram 链接拼接 | `node packages/shortlink-rotator-demo/cli.mjs --help` |
-| [packages/pixel-event-debugger](packages/pixel-event-debugger/) | Meta / TikTok / GA4 事件对照与去重 | `node packages/pixel-event-debugger/cli.mjs --help` |
-| [packages/landing-page-starter-demos](packages/landing-page-starter-demos/) | COD / 私域 / PWA 三套骨架 + 多语言校验 | `node packages/landing-page-starter-demos/cli.mjs list` |
-| [packages/pwa-return-retention-kit](packages/pwa-return-retention-kit/) | 回流页（弹窗 / 信息流）+ PWA manifest | `node packages/pwa-return-retention-kit/cli.mjs --help` |
-| [packages/quiz-wheel-funnel-demos](packages/quiz-wheel-funnel-demos/) | 问答分流 + 本地转盘 + 内置浏览器跳出 | `node packages/quiz-wheel-funnel-demos/cli.mjs --help` |
-| [packages/scrm-webhook-attribution-kit](packages/scrm-webhook-attribution-kit/) | 进粉短码归因 + Webhook 验签 + 防重发 | `node packages/scrm-webhook-attribution-kit/cli.mjs --help` |
+| 目录 | 干什么 | 对应产品 | 怎么试 |
+|---|---|---|---|
+| [packages/utm-builder](packages/utm-builder/) | 离线 UTM 链接 | [builder.ipcloak.ai](https://builder.ipcloak.ai) | `node packages/utm-builder/cli.mjs --help` |
+| [packages/landing-page-checklist](packages/landing-page-checklist/) | 37 项上线自检 + HTML 检查器 | [builder.ipcloak.ai](https://builder.ipcloak.ai) | `node packages/landing-page-checklist/checker.mjs --help` |
+| [packages/awesome-cross-border-marketing](packages/awesome-cross-border-marketing/) | 出海工具清单（数据生成 README） | [ipcloak.ai](https://ipcloak.ai) | `node packages/awesome-cross-border-marketing/scripts/build.mjs --check` |
+| [packages/cloak-integration-kit](packages/cloak-integration-kit/) | 斗篷 / 访问规则对接：PHP 安装脚本、WP 插件、`ipcheck`、`utmcheck` | [cloak.ipcloak.ai](https://cloak.ipcloak.ai) | `node packages/cloak-integration-kit/cli.mjs --help` |
+| [packages/shortlink-rotator-demo](packages/shortlink-rotator-demo/) | 4 种分流 + WhatsApp / Telegram 链接拼接 | [link.ipcloak.ai](https://link.ipcloak.ai) | `node packages/shortlink-rotator-demo/cli.mjs --help` |
+| [packages/pixel-event-debugger](packages/pixel-event-debugger/) | Meta / TikTok / GA4 事件对照与去重 | [builder.ipcloak.ai](https://builder.ipcloak.ai) | `node packages/pixel-event-debugger/cli.mjs --help` |
+| [packages/landing-page-starter-demos](packages/landing-page-starter-demos/) | COD / 私域 / PWA 三套骨架 + 多语言校验 | [culolo.online](https://culolo.online) | `node packages/landing-page-starter-demos/cli.mjs list` |
+| [packages/pwa-return-retention-kit](packages/pwa-return-retention-kit/) | 回流页（弹窗 / 信息流）+ PWA manifest | [builder.ipcloak.ai](https://builder.ipcloak.ai) | `node packages/pwa-return-retention-kit/cli.mjs --help` |
+| [packages/quiz-wheel-funnel-demos](packages/quiz-wheel-funnel-demos/) | 问答分流 + 本地转盘 + 内置浏览器跳出 | [builder.ipcloak.ai](https://builder.ipcloak.ai) | `node packages/quiz-wheel-funnel-demos/cli.mjs --help` |
+| [packages/scrm-webhook-attribution-kit](packages/scrm-webhook-attribution-kit/) | 进粉短码归因 + Webhook 验签 + 防重发 | [scrm.chuhaili.ai](https://scrm.chuhaili.ai) | `node packages/scrm-webhook-attribution-kit/cli.mjs --help` |
 
 长文在 [docs/](docs/)。Wiki 原稿在 [wiki-src/](wiki-src/)，发布时贴进**本仓库**的 Wiki，不要另开仓库。
 
@@ -54,9 +54,16 @@ GitHub 可以讲斗篷（cloak）和分流。讲的是**知识、对接和公开
 
 ## 维护方
 
-[IpCloak](https://builder.ipcloak.ai) · [落地页超市](https://culolo.online) · [分流短链](https://link.ipcloak.ai)
+爱普出海 · [ipcloak.ai](https://ipcloak.ai)
 
-本仓库工具免费、独立、不收集数据。完整后台不在这个仓库里。
+| 产品 | 地址 |
+|---|---|
+| 爱普落地页 | [builder.ipcloak.ai](https://builder.ipcloak.ai) |
+| 落地页超市 | [culolo.online](https://culolo.online) |
+| 分流短链 | [link.ipcloak.ai](https://link.ipcloak.ai) |
+| 斗篷 / 访问规则 | [cloak.ipcloak.ai](https://cloak.ipcloak.ai) |
+
+本仓库是公开工具和说明。判定引擎和完整后台不在这个仓库里。
 
 ## License
 
